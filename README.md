@@ -8,9 +8,17 @@ JS ORM for PostgreSQL
 npm install --save 5no-pg-model
 ```
 
-## Schema
+## .env
 
 ```js
+DATABASE_URL=postgres://test:123123@127.0.0.1:5432/testDB
+DATABASE_SSL=false
+DATABASE_QUERY_LOG=true
+```
+
+## Schema
+
+```json
     {
       table: {
         schema: 'public', //database schema name
@@ -258,7 +266,11 @@ GET
 
 ```js
 const dataJson = await Manager.build(Users, true).find(usersId)
-/*
+```
+
+return
+
+```json
 { 
   id: '7852468e-ac99-4f5e-9ee3-d506b0c4424e',
   secret_key: 'test_333',
@@ -289,9 +301,7 @@ const dataJson = await Manager.build(Users, true).find(usersId)
        updated_at: '2018-12-20 17:10:31' } 
     ] 
 }
-*/
 ```
-
 
 UPDATE
 

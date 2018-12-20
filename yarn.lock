@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"5no-pg-builder@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/5no-pg-builder/-/5no-pg-builder-1.0.3.tgz#eaf80cfb7baa1c6ad1378b07599f7fb8aafd2a8e"
+"5no-pg-builder@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/5no-pg-builder/-/5no-pg-builder-1.0.4.tgz#09170fa29effedd74ca1e42a8cb92e89637694ad"
   dependencies:
     dotenv "^6.1.0"
     pg "^7.5.0"
