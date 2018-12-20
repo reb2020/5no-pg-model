@@ -51,27 +51,24 @@ npm install --save 5no-pg-model
 
 ## Model Methods
 
-/*
 save()
 delete()
 toJSON()
-*/
+
 
 ## Manager.build(model, json = false) 
 
-/*
 find(value) - get one row by primary key
 findOne(field, value) - get one row by filter
 findAll(field, value) - get all rows by filter
-*/
+
 
 ## Model Relations Type "many" Methods
 
-/*
 add(data = {}) - Model data
 fetch(field, value) - get rows by filter
 fetchOne(field, value) - get row by filter
-*/
+
 
 ## Examples
 
