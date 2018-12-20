@@ -18,7 +18,7 @@ DATABASE_QUERY_LOG=true
 
 ## Schema
 
-```json
+```js
     {
       table: {
         schema: 'public', //database schema name
@@ -270,7 +270,7 @@ const dataJson = await Manager.build(Users, true).find(usersId)
 
 return
 
-```json
+```js
 { 
   id: '7852468e-ac99-4f5e-9ee3-d506b0c4424e',
   secret_key: 'test_333',
