@@ -93,10 +93,20 @@ const errors = (errors) => {
   if (type === 'error') {
     errors = [errors]
   }
+
   let returnErrors = []
-  for (let error of errors) {
-    returnErrors.push(typeof error.message !== 'undefined' ? error.message : error)
+  if (type === 'object') {
+    Object.keys(errors).forEach((name) => {
+      for (let error of errors[name]) {
+        returnErrors.push(error.message)
+      }
+    })
+  } else {
+    for (let error of errors) {
+      returnErrors.push(typeof error.message !== 'undefined' ? error.message : error)
+    }
   }
+
   return returnErrors
 }
 

@@ -108,6 +108,9 @@ class Users extends Model {
         email: {
           type: String,
           required: true,
+          validators: [
+            'email',
+          ],
         },
         public_key: {
           type: String,
@@ -232,6 +235,30 @@ describe('Model', () => {
   })
 
   describe('entry', () => {
+    it('validator', async() => {
+      const testNewUser = new Users()
+
+      testNewUser.email = 'test@test'
+      testNewUser.public_key = 'test_123'
+      testNewUser.secret_key = 'test_333'
+      testNewUser.Addresses.add({
+        street_name: 'Test',
+        postcode: '100500',
+      })
+      testNewUser.Addresses.add({
+        street_name: 'Test1',
+        postcode: '100502',
+      })
+      testNewUser.Info.first_name = 'Aleks2'
+      testNewUser.Info.last_name = 'Sokol2'
+
+      const error = await testNewUser.save()
+
+      expect(error).to.eql([
+        'email has incorrect email format',
+      ])
+    })
+
     it('create', async() => {
       const testNewUser = new Users()
 
