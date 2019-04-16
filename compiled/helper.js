@@ -129,7 +129,7 @@ var errors = function errors(_errors) {
         for (var _iterator = _errors[name][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var error = _step.value;
 
-          returnErrors.push(error.message);
+          returnErrors.push(error);
         }
       } catch (err) {
         _didIteratorError = true;

@@ -1,6 +1,6 @@
 {
   "name": "5no-pg-model",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "JS ORM for PostgreSQL",
   "main": "compiled/index.js",
   "scripts": {
@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "5no-pg-builder": "^1.0.5",
-    "5no-schema": "^1.0.7"
+    "5no-schema": "^1.0.8"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

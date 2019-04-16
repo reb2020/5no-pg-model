@@ -98,7 +98,7 @@ const errors = (errors) => {
   if (type === 'object') {
     Object.keys(errors).forEach((name) => {
       for (let error of errors[name]) {
-        returnErrors.push(error.message)
+        returnErrors.push(error)
       }
     })
   } else {

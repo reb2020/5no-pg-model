@@ -12,10 +12,10 @@
     pg-pool "^2.0.0"
     url "^0.11.0"
 
-"5no-schema@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/5no-schema/-/5no-schema-1.0.7.tgz#34ab450274b4772d8ef8351b4c83ce9d6a6ff046"
-  integrity sha512-jSsCn57lSnMZCewShRhLm6Vr9hlZ1c8wRLvsw78pKL+/CGL2iFuxU9HLKLL/r6G6OZaHPFkG64hVlykeGebEAw==
+"5no-schema@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/5no-schema/-/5no-schema-1.0.8.tgz#b6941b4d8ddbe471436d1a1b190986ca69141760"
+  integrity sha512-EE3h80U37iIb7oEKhXdH4H9Cox9PsU9/KwisvdeQU57lTN2yqhPUbIFuetJgn0yDemzjsS/yEaE231rX7Li8SA==
   dependencies:
     moment "^2.22.2"
 
