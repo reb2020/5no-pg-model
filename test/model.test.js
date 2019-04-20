@@ -121,6 +121,10 @@ class Users extends Model {
           defaultValue: '',
           required: true,
         },
+        personalised: {
+          type: Object,
+          defaultValue: null,
+        },
         created_at: {
           type: Date,
           created: true,
@@ -190,6 +194,9 @@ const jsonTestData = {
   'public_key': 'test_123',
   'secret_key': 'test_333',
   'updated_at': sinon.match(dateRegex),
+  'personalised': {
+    test: 100,
+  },
 }
 
 const jsonTestUpdateData = {
@@ -225,6 +232,9 @@ const jsonTestUpdateData = {
   'public_key': 'test_123',
   'secret_key': 'test_33309',
   'updated_at': sinon.match(dateRegex),
+  'personalised': {
+    test: 100,
+  },
 }
 
 describe('Model', () => {
@@ -241,6 +251,9 @@ describe('Model', () => {
       testNewUser.email = 'test@test'
       testNewUser.public_key = 'test_123'
       testNewUser.secret_key = 'test_333'
+      testNewUser.personalised = {
+        test: 100,
+      }
       testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
@@ -254,9 +267,9 @@ describe('Model', () => {
 
       const error = await testNewUser.save()
 
-      expect(error).to.eql([
-        'email has incorrect email format',
-      ])
+      expect(error).to.eql({
+        email: ['email has incorrect email format'],
+      })
     })
 
     it('create', async() => {
@@ -265,6 +278,9 @@ describe('Model', () => {
       testNewUser.email = 'test@test.me'
       testNewUser.public_key = 'test_123'
       testNewUser.secret_key = 'test_333'
+      testNewUser.personalised = {
+        test: 100,
+      }
       testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
@@ -302,9 +318,9 @@ describe('Model', () => {
 
       const error = await testNewUser.save()
 
-      expect(error).to.eql([
-        'duplicate key value violates unique constraint "users_email_index"',
-      ])
+      expect(error).to.eql({
+        error: 'duplicate key value violates unique constraint "users_email_index"',
+      })
     })
 
     it('get', async() => {

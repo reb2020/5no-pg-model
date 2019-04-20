@@ -90,24 +90,11 @@ const modelSchemaRelationsFormater = (relations) => {
 
 const errors = (errors) => {
   const type = getTypeOfValue(errors)
-  if (type === 'error') {
-    errors = [errors]
-  }
-
-  let returnErrors = []
   if (type === 'object') {
-    Object.keys(errors).forEach((name) => {
-      for (let error of errors[name]) {
-        returnErrors.push(error)
-      }
-    })
-  } else {
-    for (let error of errors) {
-      returnErrors.push(typeof error.message !== 'undefined' ? error.message : error)
-    }
+    return errors
   }
 
-  return returnErrors
+  return { error: typeof errors.message !== 'undefined' ? errors.message : errors }
 }
 
 module.exports = {

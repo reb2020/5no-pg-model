@@ -192,6 +192,10 @@ class Users extends Model {
           defaultValue: '',
           required: true,
         },
+        personalised: {
+          type: Object,
+          defaultValue: null,
+        },
         created_at: {
           type: Date,
           created: true,
@@ -237,6 +241,9 @@ const testNewUser = new Users()
 testNewUser.email = 'test@test.me'
 testNewUser.public_key = 'test_123'
 testNewUser.secret_key = 'test_333'
+testNewUser.personalised = {
+  test: 100
+}
       
 testNewUser.Addresses.add({
   street_name: 'Test',
@@ -278,6 +285,9 @@ return
   public_key: 'test_123',
   created_at: '2018-12-20 17:10:31',
   updated_at: '2018-12-20 17:10:31',
+  personalised: {
+    test: 100
+  },
   Info: 
    { id: '0320dc4f-4ca7-4b65-bd42-52f286a0b9db',
      user_id: '7852468e-ac99-4f5e-9ee3-d506b0c4424e',
