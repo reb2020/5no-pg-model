@@ -12,10 +12,11 @@ class ModelSchema {
 
     this.table = table.name
     this.schema = table.schema || 'public'
+    this.type = null
     this.createdField = modelSchemaFormat.createdField
     this.updatedField = modelSchemaFormat.updatedField
-    this.primaryKey = modelSchemaFormat.primaryKeyField
-    this.primaryKeyValue = null
+    this.primaryKeys = modelSchemaFormat.primaryKeyFields
+    this.primaryKeysValue = {}
     this.columns = schema.fields
     this.filter = schema.filter
     this.validate = schema.validate
@@ -23,7 +24,7 @@ class ModelSchema {
   }
 
   isUpdatable = () => {
-    if (this.primaryKeyValue) {
+    if (Object.keys(this.primaryKeysValue).length && this.type !== 'new') {
       return true
     }
     return false
@@ -41,14 +42,16 @@ class ModelSchema {
       returnData[this.updatedField] = nowDate
     }
 
-    return Object.assign({}, data, returnData)
+    return Object.assign({}, data, returnData, (this.type === 'new' ? this.primaryKeysValue : {}))
   }
 
   getBuilder = () => {
     const db = getBuilder(this)
 
     if (this.isUpdatable()) {
-      db.where(this.primaryKey, '=', this.primaryKeyValue)
+      for (let primaryKey of this.primaryKeys) {
+        db.where(primaryKey, '=', this.primaryKeysValue[primaryKey])
+      }
     }
 
     return db
@@ -61,16 +64,27 @@ class ModelSchema {
       if (cascade.includes(method)) {
         const type = getTypeOfValue(data[name])
 
-        let localValue = data[local]
-
-        if (local === this.primaryKey) {
-          localValue = this.primaryKeyValue
+        if (type === 'undefined') {
+          continue
         }
 
-        if (type === 'many') {
+        let localValue = data[local]
+
+        if (this.primaryKeys.includes(local)) {
+          localValue = this.primaryKeysValue[local]
+        }
+
+        if (type === 'many' || type === 'join') {
           for (let item of data[name]) {
-            if (item[foreign] !== localValue) {
-              item[foreign] = localValue
+            if (type === 'join') {
+              if (item._join[foreign] !== localValue) {
+                item._join[foreign] = localValue
+                item._join._schema.type = 'new'
+              }
+            } else {
+              if (item[foreign] !== localValue) {
+                item[foreign] = localValue
+              }
             }
             let result = null
             if (method === 'save') {

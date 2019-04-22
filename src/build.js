@@ -2,10 +2,12 @@ import {getBuilder} from './helper'
 
 const TYPE_ONE = 'one'
 const TYPE_MANY = 'many'
+const TYPE_JOIN = 'join'
 
 class Build {
     _schema = null
     _model = null
+    _join = null
     _json = false
     _isRelations = false
 
@@ -17,9 +19,18 @@ class Build {
 
     _relations = async(item) => {
       for (let relationData of this._schema.relations) {
-        const {name, model, foreign, local, type} = relationData
+        const {name, type, model, foreign, local, join} = relationData
         const data = new Build(model)
         data._isRelations = true
+
+        if (type === TYPE_JOIN) {
+          data._join = {
+            builder: getBuilder(join.model.getSchema()),
+            local: join.local,
+            foreign: join.foreign,
+          }
+        }
+
         if (type === TYPE_ONE) {
           item[name] = await data.findOne(foreign, item[local])
         } else {
@@ -28,15 +39,33 @@ class Build {
       }
     }
 
-    _execute = async(field, value, type = TYPE_MANY) => {
-      const Model = this._model
+    _initDb = (fields, values, type = TYPE_MANY) => {
       const db = getBuilder(this._schema)
-      db.select(['*'])
-      db.where(field, '=', value)
+
+      if (this._join) {
+        db.select()
+        this._join.builder.select(['*'])
+        db.innerJoin(this._join.builder, this._join.local, this._join.foreign)
+      } else {
+        db.select(['*'])
+      }
+
+      let index = 0
+      for (let field of fields) {
+        db.where(field, '=', values[index])
+        index++
+      }
 
       if (type === TYPE_ONE) {
         db.limit(1)
       }
+
+      return db
+    }
+
+    _execute = async(fields, values, type = TYPE_MANY) => {
+      const Model = this._model
+      const db = this._initDb(fields, values, type)
 
       const result = await db.execute()
 
@@ -63,16 +92,16 @@ class Build {
       }
     }
 
-    find = async(value) => {
-      return this._execute(this._schema.primaryKey, value, TYPE_ONE)
+    find = async(...values) => {
+      return this._execute(this._schema.primaryKeys, values, TYPE_ONE)
     }
 
     findOne = async(field, value) => {
-      return this._execute(field, value, TYPE_ONE)
+      return this._execute([field], [value], TYPE_ONE)
     }
 
     findAll = async(field, value) => {
-      return this._execute(field, value, TYPE_MANY)
+      return this._execute([field], [value], TYPE_MANY)
     }
 }
 

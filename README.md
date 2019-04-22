@@ -44,10 +44,11 @@ DATABASE_QUERY_LOG=true
       },
       relations: {
         Info: { // name 
-          model: UsersInfo, // model
+          model: UsersInfo, // model 
+          join: {}, // join model
           local: 'id', // local column
           foreign: 'user_id', // external table field
-          type: 'one', // one, many
+          type: 'one', // one, many, join
           cascade: [ // cascade methods "save", "delete"
             'save',
             'delete',
@@ -86,6 +87,60 @@ fetchOne(field, value) // get row by filter
 
 ```js
 const { Manager, Model } = require('5no-pg-model')
+
+
+class Roles extends Model {
+  static schema = {
+    table: {
+      schema: 'public',
+      name: 'roles',
+    },
+    columns: {
+      id: {
+        type: String,
+        primaryKey: true,
+        defaultValue: null,
+      },
+      role: {
+        type: String,
+        defaultValue: null,
+      },
+      created_at: {
+        type: Date,
+        created: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+      },
+      updated_at: {
+        type: Date,
+        updated: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+      },
+    },
+    relations: {},
+  }
+}
+
+class UserRoles extends Model {
+  static schema = {
+    table: {
+      schema: 'public',
+      name: 'user_roles',
+    },
+    columns: {
+      user_id: {
+        type: String,
+        defaultValue: null,
+        primaryKey: true,
+      },
+      role_id: {
+        type: String,
+        defaultValue: null,
+        primaryKey: true,
+      },
+    },
+    relations: {},
+  }
+}
 
 class UsersAddresses extends Model {
     static schema = {
@@ -228,6 +283,21 @@ class Users extends Model {
             'delete',
           ],
         },
+        Roles: {
+          model: UserRoles,
+          join: {
+            model: Roles,
+            local: 'role_id',
+            foreign: 'id',
+          },
+          local: 'id',
+          foreign: 'user_id',
+          type: 'join', // many to many
+          cascade: [
+            'save',
+            'delete',
+          ],
+        },
       },
     }
 }
@@ -236,6 +306,10 @@ class Users extends Model {
 CREATE NEW ENTRY
 
 ```js
+const roleModel = new Roles()
+roleModel.role = 'Admin'
+await roleModel.save()
+
 const testNewUser = new Users()
 
 testNewUser.email = 'test@test.me'
@@ -256,6 +330,8 @@ testNewUser.Addresses.add({
 
 testNewUser.Info.first_name = 'Aleks2'
 testNewUser.Info.last_name = 'Sokol2'
+
+testNewUser.Roles.add(roleModel)
 
 const returnData = await testNewUser.save()
 
@@ -309,7 +385,15 @@ return
        postcode: '100502',
        created_at: '2018-12-20 17:10:31',
        updated_at: '2018-12-20 17:10:31' } 
-    ] 
+    ], 
+  Roles: [
+    {
+      created_at: '2018-12-20 17:10:31',
+      id: 'be40ccb3-3a33-4b6e-9467-6907b0c4396b',
+      role: 'Admin',
+      updated_at: '2018-12-20 17:10:31'
+    }
+  ]
 }
 ```
 
@@ -338,6 +422,14 @@ await data.delete()
 /* 
 If all correct function return boolean "true" otherwise array errors
 */
+```
+
+DELETE ONE ITEM FROM RELATE
+
+```js
+let data = await Manager.build(Users).find(usersId)
+let dataDel = data.Roles.fetchOne('role', 'Admin')
+await dataDel.delete()
 ```
 
 ## License

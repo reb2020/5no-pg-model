@@ -1,5 +1,6 @@
 import ModelSchema from './schema'
 import Many from './many'
+import Join from './join'
 import {errors, getTypeOfValue, transaction} from './helper'
 
 class Model {
@@ -8,6 +9,7 @@ class Model {
     _schema = null
     _data = {}
     _change = {}
+    _join = null
 
     constructor(data = {}) {
       if (!this.constructor.schema) {
@@ -17,18 +19,20 @@ class Model {
       this._schema = this.constructor.getSchema()
 
       Object.keys(this._schema.columns).forEach((column) => {
-        if (column !== this._schema.primaryKey && typeof this._schema.columns[column] !== 'undefined') {
+        if (!this._schema.primaryKeys.includes(column) && typeof this._schema.columns[column] !== 'undefined') {
           this._data[column] = this._schema.columns[column]
         }
         Object.defineProperty(this, column, {
           set: (v) => {
-            if (column !== this._schema.primaryKey) {
+            if (this._schema.primaryKeys.includes(column)) {
+              this._schema.primaryKeysValue[column] = v
+            } else {
               this._data[column] = this._change[column] = v
             }
           },
           get: () => {
-            if (column === this._schema.primaryKey) {
-              return this._schema.primaryKeyValue
+            if (this._schema.primaryKeys.includes(column)) {
+              return this._schema.primaryKeysValue[column]
             }
             return this._data[column] || null
           },
@@ -36,14 +40,16 @@ class Model {
       })
 
       for (let relationData of this._schema.relations) {
-        const {name, type, model: RelationModel} = relationData
+        const {name, type, model: RelationModel, join} = relationData
         Object.defineProperty(this, name, {
           get: () => {
             if (!this._data[name]) {
               if (type === 'one') {
                 this._data[name] = new RelationModel()
-              } else {
+              } else if (type === 'many') {
                 this._data[name] = new Many(RelationModel)
+              } else if (type === 'join') {
+                this._data[name] = new Join(RelationModel, join)
               }
             }
             return this._data[name]
@@ -61,23 +67,30 @@ class Model {
     setData = (data) => {
       const filterData = this._schema.filter(data)
       Object.keys(filterData).forEach((key) => {
-        if (key === this._schema.primaryKey) {
-          this._schema.primaryKeyValue = filterData[key]
+        if (this._schema.primaryKeys.includes(key)) {
+          this._schema.primaryKeysValue[key] = filterData[key]
         } else if (Object.keys(this._schema.columns).includes(key)) {
           this._data[key] = filterData[key]
         }
       })
 
       for (let relationData of this._schema.relations) {
-        const {name, model: RelationModel} = relationData
-        const type = getTypeOfValue(data[name])
+        const {name, type, model: RelationModel, join, foreign, local} = relationData
+        const typeOfValue = getTypeOfValue(data[name])
 
-        if (type === 'array') {
+        if (type === 'many' && typeOfValue === 'array') {
           this._data[name] = new Many(RelationModel)
           for (let item of data[name]) {
-            this._data[name].push(new RelationModel(item))
+            this._data[name].add(item)
           }
-        } else if (type === 'object') {
+        } else if (type === 'join' && typeOfValue === 'array') {
+          this._data[name] = new Join(RelationModel, join)
+          for (let item of data[name]) {
+            let joinData = Object.assign({}, item)
+            joinData[foreign] = data[local]
+            this._data[name].add(joinData)
+          }
+        } else if (type === 'one' && typeOfValue === 'object') {
           this._data[name] = new RelationModel(data[name])
         }
       }
@@ -88,6 +101,9 @@ class Model {
     }
 
     save = async(transactionMode = true) => {
+      if (this._join) {
+        return this._join.save(transactionMode)
+      }
       try {
         const db = this._schema.getBuilder()
         const data = await this._schema.validate(this.getData())
@@ -124,6 +140,9 @@ class Model {
     }
 
     delete = async(transactionMode = true) => {
+      if (this._join) {
+        return this._join.delete(transactionMode)
+      }
       try {
         const db = this._schema.getBuilder()
         if (!this._schema.isUpdatable()) {
@@ -147,8 +166,10 @@ class Model {
     toJSON = () => {
       let dataJSON = {}
 
-      if (this._schema.primaryKey) {
-        dataJSON[this._schema.primaryKey] = this._schema.primaryKeyValue
+      if (this._schema.primaryKeys.length) {
+        for (let primaryKey of this._schema.primaryKeys) {
+          dataJSON[primaryKey] = this._schema.primaryKeysValue[primaryKey]
+        }
       }
 
       dataJSON = Object.assign(dataJSON, this.getData())
@@ -158,7 +179,7 @@ class Model {
         const data = this._data[name]
         const type = getTypeOfValue(data)
 
-        if (type === 'many') {
+        if (type === 'many' || type === 'join') {
           dataJSON[name] = []
           for (let item of data) {
             dataJSON[name].push(item.toJSON())

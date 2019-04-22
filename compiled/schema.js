@@ -36,10 +36,11 @@ var ModelSchema = function ModelSchema(data) {
 
   this.table = table.name;
   this.schema = table.schema || 'public';
+  this.type = null;
   this.createdField = modelSchemaFormat.createdField;
   this.updatedField = modelSchemaFormat.updatedField;
-  this.primaryKey = modelSchemaFormat.primaryKeyField;
-  this.primaryKeyValue = null;
+  this.primaryKeys = modelSchemaFormat.primaryKeyFields;
+  this.primaryKeysValue = {};
   this.columns = schema.fields;
   this.filter = schema.filter;
   this.validate = schema.validate;
@@ -50,7 +51,7 @@ var _initialiseProps = function _initialiseProps() {
   var _this = this;
 
   this.isUpdatable = function () {
-    if (_this.primaryKeyValue) {
+    if (Object.keys(_this.primaryKeysValue).length && _this.type !== 'new') {
       return true;
     }
     return false;
@@ -68,14 +69,37 @@ var _initialiseProps = function _initialiseProps() {
       returnData[_this.updatedField] = nowDate;
     }
 
-    return Object.assign({}, data, returnData);
+    return Object.assign({}, data, returnData, _this.type === 'new' ? _this.primaryKeysValue : {});
   };
 
   this.getBuilder = function () {
     var db = (0, _helper.getBuilder)(_this);
 
     if (_this.isUpdatable()) {
-      db.where(_this.primaryKey, '=', _this.primaryKeyValue);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = _this.primaryKeys[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var primaryKey = _step.value;
+
+          db.where(primaryKey, '=', _this.primaryKeysValue[primaryKey]);
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     }
 
     return db;
@@ -83,224 +107,240 @@ var _initialiseProps = function _initialiseProps() {
 
   this.cascadeExecute = function () {
     var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(method, data) {
-      var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, relationData, name, local, foreign, cascade, type, localValue, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, item, result, _result;
+      var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, relationData, name, local, foreign, cascade, type, localValue, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, item, result, _result;
 
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _iteratorNormalCompletion = true;
-              _didIteratorError = false;
-              _iteratorError = undefined;
+              _iteratorNormalCompletion2 = true;
+              _didIteratorError2 = false;
+              _iteratorError2 = undefined;
               _context.prev = 3;
-              _iterator = _this.relations[Symbol.iterator]();
+              _iterator2 = _this.relations[Symbol.iterator]();
 
             case 5:
-              if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                _context.next = 70;
+              if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
+                _context.next = 72;
                 break;
               }
 
-              relationData = _step.value;
+              relationData = _step2.value;
               name = relationData.name, local = relationData.local, foreign = relationData.foreign, cascade = relationData.cascade;
 
               if (!cascade.includes(method)) {
-                _context.next = 67;
+                _context.next = 69;
                 break;
               }
 
               type = (0, _helper.getTypeOfValue)(data[name]);
+
+              if (!(type === 'undefined')) {
+                _context.next = 12;
+                break;
+              }
+
+              return _context.abrupt('continue', 69);
+
+            case 12:
               localValue = data[local];
 
 
-              if (local === _this.primaryKey) {
-                localValue = _this.primaryKeyValue;
+              if (_this.primaryKeys.includes(local)) {
+                localValue = _this.primaryKeysValue[local];
               }
 
-              if (!(type === 'many')) {
-                _context.next = 53;
+              if (!(type === 'many' || type === 'join')) {
+                _context.next = 55;
                 break;
               }
 
-              _iteratorNormalCompletion2 = true;
-              _didIteratorError2 = false;
-              _iteratorError2 = undefined;
-              _context.prev = 16;
-              _iterator2 = data[name][Symbol.iterator]();
+              _iteratorNormalCompletion3 = true;
+              _didIteratorError3 = false;
+              _iteratorError3 = undefined;
+              _context.prev = 18;
+              _iterator3 = data[name][Symbol.iterator]();
 
-            case 18:
-              if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
-                _context.next = 37;
+            case 20:
+              if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
+                _context.next = 39;
                 break;
               }
 
-              item = _step2.value;
+              item = _step3.value;
 
-              if (item[foreign] !== localValue) {
-                item[foreign] = localValue;
+              if (type === 'join') {
+                if (item._join[foreign] !== localValue) {
+                  item._join[foreign] = localValue;
+                  item._join._schema.type = 'new';
+                }
+              } else {
+                if (item[foreign] !== localValue) {
+                  item[foreign] = localValue;
+                }
               }
               result = null;
 
               if (!(method === 'save')) {
-                _context.next = 28;
+                _context.next = 30;
                 break;
               }
 
-              _context.next = 25;
+              _context.next = 27;
               return item.save(false);
 
-            case 25:
+            case 27:
               result = _context.sent;
-              _context.next = 32;
+              _context.next = 34;
               break;
 
-            case 28:
+            case 30:
               if (!(method === 'delete')) {
-                _context.next = 32;
+                _context.next = 34;
                 break;
               }
 
-              _context.next = 31;
+              _context.next = 33;
               return item.delete(false);
 
-            case 31:
+            case 33:
               result = _context.sent;
 
-            case 32:
+            case 34:
               if (!(result !== true)) {
-                _context.next = 34;
+                _context.next = 36;
                 break;
               }
 
               throw result;
 
-            case 34:
-              _iteratorNormalCompletion2 = true;
-              _context.next = 18;
-              break;
-
-            case 37:
-              _context.next = 43;
+            case 36:
+              _iteratorNormalCompletion3 = true;
+              _context.next = 20;
               break;
 
             case 39:
-              _context.prev = 39;
-              _context.t0 = _context['catch'](16);
-              _didIteratorError2 = true;
-              _iteratorError2 = _context.t0;
+              _context.next = 45;
+              break;
 
-            case 43:
-              _context.prev = 43;
-              _context.prev = 44;
+            case 41:
+              _context.prev = 41;
+              _context.t0 = _context['catch'](18);
+              _didIteratorError3 = true;
+              _iteratorError3 = _context.t0;
 
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
-              }
-
-            case 46:
+            case 45:
+              _context.prev = 45;
               _context.prev = 46;
 
-              if (!_didIteratorError2) {
-                _context.next = 49;
+              if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
+              }
+
+            case 48:
+              _context.prev = 48;
+
+              if (!_didIteratorError3) {
+                _context.next = 51;
                 break;
               }
 
-              throw _iteratorError2;
-
-            case 49:
-              return _context.finish(46);
-
-            case 50:
-              return _context.finish(43);
+              throw _iteratorError3;
 
             case 51:
-              _context.next = 67;
-              break;
+              return _context.finish(48);
+
+            case 52:
+              return _context.finish(45);
 
             case 53:
+              _context.next = 69;
+              break;
+
+            case 55:
               if (data[name][foreign] !== localValue) {
                 data[name][foreign] = localValue;
               }
               _result = null;
 
               if (!(method === 'save')) {
-                _context.next = 61;
+                _context.next = 63;
                 break;
               }
 
-              _context.next = 58;
+              _context.next = 60;
               return data[name].save(false);
 
-            case 58:
+            case 60:
               _result = _context.sent;
-              _context.next = 65;
+              _context.next = 67;
               break;
 
-            case 61:
+            case 63:
               if (!(method === 'delete')) {
-                _context.next = 65;
+                _context.next = 67;
                 break;
               }
 
-              _context.next = 64;
+              _context.next = 66;
               return data[name].delete(false);
 
-            case 64:
+            case 66:
               _result = _context.sent;
 
-            case 65:
+            case 67:
               if (!(_result !== true)) {
-                _context.next = 67;
+                _context.next = 69;
                 break;
               }
 
               throw _result;
 
-            case 67:
-              _iteratorNormalCompletion = true;
+            case 69:
+              _iteratorNormalCompletion2 = true;
               _context.next = 5;
               break;
 
-            case 70:
-              _context.next = 76;
+            case 72:
+              _context.next = 78;
               break;
 
-            case 72:
-              _context.prev = 72;
+            case 74:
+              _context.prev = 74;
               _context.t1 = _context['catch'](3);
-              _didIteratorError = true;
-              _iteratorError = _context.t1;
+              _didIteratorError2 = true;
+              _iteratorError2 = _context.t1;
 
-            case 76:
-              _context.prev = 76;
-              _context.prev = 77;
-
-              if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-              }
-
-            case 79:
+            case 78:
+              _context.prev = 78;
               _context.prev = 79;
 
-              if (!_didIteratorError) {
-                _context.next = 82;
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+              }
+
+            case 81:
+              _context.prev = 81;
+
+              if (!_didIteratorError2) {
+                _context.next = 84;
                 break;
               }
 
-              throw _iteratorError;
-
-            case 82:
-              return _context.finish(79);
-
-            case 83:
-              return _context.finish(76);
+              throw _iteratorError2;
 
             case 84:
+              return _context.finish(81);
+
+            case 85:
+              return _context.finish(78);
+
+            case 86:
             case 'end':
               return _context.stop();
           }
         }
-      }, _callee, _this, [[3, 72, 76, 84], [16, 39, 43, 51], [44,, 46, 50], [77,, 79, 83]]);
+      }, _callee, _this, [[3, 74, 78, 86], [18, 41, 45, 53], [46,, 48, 52], [79,, 81, 85]]);
     }));
 
     return function (_x, _x2) {

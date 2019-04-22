@@ -40,14 +40,14 @@ const getTypeOfValue = (value) => {
 
 const modelSchemaFormater = (columns) => {
   let returnFormat = {}
-  let primaryKeyField = null
+  let primaryKeyFields = []
   let createdField = null
   let updatedField = null
   Object.keys(columns).forEach((field) => {
     const { type, defaultValue, required, filters, validators, primaryKey, format, created, updated } = columns[field]
 
     if (primaryKey) {
-      primaryKeyField = field
+      primaryKeyFields.push(field)
     }
 
     if (getTypeName(type) === 'date' && created === true) {
@@ -68,19 +68,20 @@ const modelSchemaFormater = (columns) => {
     }
   })
 
-  return {primaryKeyField: primaryKeyField, createdField: createdField, updatedField: updatedField, returnFormat: returnFormat}
+  return {primaryKeyFields: primaryKeyFields, createdField: createdField, updatedField: updatedField, returnFormat: returnFormat}
 }
 
 const modelSchemaRelationsFormater = (relations) => {
   let relationsData = []
   Object.keys(relations).forEach((name) => {
-    const {model, foreign, local, type, cascade} = relations[name]
+    const {model, foreign, local, type, cascade, join} = relations[name]
     relationsData.push({
       name: name,
       model: model,
       foreign: foreign,
       local: local,
       type: type,
+      join: join || {},
       cascade: cascade || [],
     })
   })

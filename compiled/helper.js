@@ -48,7 +48,7 @@ var getTypeOfValue = function getTypeOfValue(value) {
 
 var modelSchemaFormater = function modelSchemaFormater(columns) {
   var returnFormat = {};
-  var primaryKeyField = null;
+  var primaryKeyFields = [];
   var createdField = null;
   var updatedField = null;
   Object.keys(columns).forEach(function (field) {
@@ -65,7 +65,7 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
 
 
     if (primaryKey) {
-      primaryKeyField = field;
+      primaryKeyFields.push(field);
     }
 
     if (getTypeName(type) === 'date' && created === true) {
@@ -86,7 +86,7 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
     };
   });
 
-  return { primaryKeyField: primaryKeyField, createdField: createdField, updatedField: updatedField, returnFormat: returnFormat };
+  return { primaryKeyFields: primaryKeyFields, createdField: createdField, updatedField: updatedField, returnFormat: returnFormat };
 };
 
 var modelSchemaRelationsFormater = function modelSchemaRelationsFormater(relations) {
@@ -97,7 +97,8 @@ var modelSchemaRelationsFormater = function modelSchemaRelationsFormater(relatio
         foreign = _relations$name.foreign,
         local = _relations$name.local,
         type = _relations$name.type,
-        cascade = _relations$name.cascade;
+        cascade = _relations$name.cascade,
+        join = _relations$name.join;
 
     relationsData.push({
       name: name,
@@ -105,6 +106,7 @@ var modelSchemaRelationsFormater = function modelSchemaRelationsFormater(relatio
       foreign: foreign,
       local: local,
       type: type,
+      join: join || {},
       cascade: cascade || []
     });
   });

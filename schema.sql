@@ -176,3 +176,20 @@ CREATE UNIQUE INDEX  "users_email_index" ON "public"."users" USING btree(email C
 CREATE INDEX  "users_public_key_index" ON "public"."users" USING btree(public_key COLLATE "default" ASC NULLS LAST);
 CREATE INDEX  "users_secret_key_index" ON "public"."users" USING btree(secret_key COLLATE "default" ASC NULLS LAST);
 
+
+DROP TABLE IF EXISTS "public"."roles";
+CREATE TABLE "public"."roles" (
+	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+	"role" text NOT NULL COLLATE "default",
+	"created_at" timestamp(6) WITH TIME ZONE NOT NULL DEFAULT now(),
+	"updated_at" timestamp(6) WITH TIME ZONE NOT NULL DEFAULT now()
+)
+WITH (OIDS=FALSE);
+
+
+DROP TABLE IF EXISTS "public"."user_roles";
+CREATE TABLE "public"."user_roles" (
+	"user_id" uuid NOT NULL,
+	"role_id" uuid NOT NULL
+)
+WITH (OIDS=FALSE);
