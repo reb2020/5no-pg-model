@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"5no-pg-builder@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/5no-pg-builder/-/5no-pg-builder-1.0.6.tgz#59ac7684cff647dad9a3871131c0758a4c72094b"
-  integrity sha512-E0WyL1YNomCmP6OrQz+sAmstkYK2QJuDla1xO7Nzs2QYZOvFTzi0NqmiMY2ZKdseHOGLlPlXaq/4EILS2FpKZQ==
+"5no-pg-builder@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/5no-pg-builder/-/5no-pg-builder-1.0.7.tgz#0f3bb6b982df3e57913346181f2f88c75ee85b48"
+  integrity sha512-HovA7kAuZUAf4KBJxHAbiMCMvveeX8LpMScMx77TWJyJUxVRhkZJEzKY7wNho59B/1z2blw+4Czp6iy2bBDSsw==
   dependencies:
     dotenv "^6.1.0"
     pg "^7.5.0"

@@ -52,7 +52,11 @@ class Build {
 
       let index = 0
       for (let field of fields) {
-        db.where(field, '=', values[index])
+        if (values[index] === null) {
+          db.whereIsNull(field)
+        } else {
+          db.where(field, '=', values[index])
+        }
         index++
       }
 

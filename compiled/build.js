@@ -168,7 +168,11 @@ var _initialiseProps = function _initialiseProps() {
       for (var _iterator2 = fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
         var field = _step2.value;
 
-        db.where(field, '=', values[index]);
+        if (values[index] === null) {
+          db.whereIsNull(field);
+        } else {
+          db.where(field, '=', values[index]);
+        }
         index++;
       }
     } catch (err) {

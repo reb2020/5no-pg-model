@@ -180,7 +180,7 @@ CREATE INDEX  "users_secret_key_index" ON "public"."users" USING btree(secret_ke
 DROP TABLE IF EXISTS "public"."roles";
 CREATE TABLE "public"."roles" (
 	"id" uuid NOT NULL DEFAULT uuid_generate_v4(),
-	"role" text NOT NULL COLLATE "default",
+	"role" text NULL,
 	"created_at" timestamp(6) WITH TIME ZONE NOT NULL DEFAULT now(),
 	"updated_at" timestamp(6) WITH TIME ZONE NOT NULL DEFAULT now()
 )

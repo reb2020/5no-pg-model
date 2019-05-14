@@ -335,6 +335,13 @@ const jsonTestUpdateData = {
   },
 }
 
+const jsonNullTestData = {
+  'created_at': sinon.match(dateRegex),
+  'id': sinon.match(uuidV4Regex),
+  'role': null,
+  'updated_at': sinon.match(dateRegex),
+}
+
 describe('Model', () => {
   beforeEach(() => {
   })
@@ -363,6 +370,16 @@ describe('Model', () => {
       const roleData = await role.save()
 
       customerRole = role
+
+      expect(roleData).to.eql(true)
+    })
+
+    it('add null role', async() => {
+      const role = new Roles()
+
+      role.role = null
+
+      const roleData = await role.save()
 
       expect(roleData).to.eql(true)
     })
@@ -468,6 +485,13 @@ describe('Model', () => {
       let cb = sinon.spy()
       cb(dataJson)
       cb.should.have.been.calledWith(jsonTestData)
+    })
+
+    it('get null', async() => {
+      const dataJson = await Manager.build(Roles, true).findOne('role', null)
+      let cb = sinon.spy()
+      cb(dataJson)
+      cb.should.have.been.calledWith(jsonNullTestData)
     })
 
     it('update', async() => {
