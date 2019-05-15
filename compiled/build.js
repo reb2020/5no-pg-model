@@ -223,7 +223,7 @@ var _initialiseProps = function _initialiseProps() {
 
             case 11:
               if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
-                _context2.next = 19;
+                _context2.next = 34;
                 break;
               }
 
@@ -232,74 +232,97 @@ var _initialiseProps = function _initialiseProps() {
               return _this._relations(item);
 
             case 15:
-              if (_this._isRelations === true) {
-                returnData.push(item);
-              } else {
-                modelData = new Model(item);
-
-                if (_this._json === true) {
-                  returnData.push(modelData.toJSON());
-                } else {
-                  returnData.push(modelData);
-                }
+              if (!(_this._isRelations === true)) {
+                _context2.next = 19;
+                break;
               }
 
-            case 16:
+              returnData.push(item);
+              _context2.next = 31;
+              break;
+
+            case 19:
+              modelData = new Model();
+              _context2.next = 22;
+              return modelData.setData(item);
+
+            case 22:
+              if (!(_this._json === true)) {
+                _context2.next = 30;
+                break;
+              }
+
+              _context2.t0 = returnData;
+              _context2.next = 26;
+              return modelData.toJSON();
+
+            case 26:
+              _context2.t1 = _context2.sent;
+
+              _context2.t0.push.call(_context2.t0, _context2.t1);
+
+              _context2.next = 31;
+              break;
+
+            case 30:
+              returnData.push(modelData);
+
+            case 31:
               _iteratorNormalCompletion3 = true;
               _context2.next = 11;
               break;
 
-            case 19:
-              _context2.next = 25;
+            case 34:
+              _context2.next = 40;
               break;
 
-            case 21:
-              _context2.prev = 21;
-              _context2.t0 = _context2['catch'](9);
+            case 36:
+              _context2.prev = 36;
+              _context2.t2 = _context2['catch'](9);
               _didIteratorError3 = true;
-              _iteratorError3 = _context2.t0;
+              _iteratorError3 = _context2.t2;
 
-            case 25:
-              _context2.prev = 25;
-              _context2.prev = 26;
+            case 40:
+              _context2.prev = 40;
+              _context2.prev = 41;
 
               if (!_iteratorNormalCompletion3 && _iterator3.return) {
                 _iterator3.return();
               }
 
-            case 28:
-              _context2.prev = 28;
+            case 43:
+              _context2.prev = 43;
 
               if (!_didIteratorError3) {
-                _context2.next = 31;
+                _context2.next = 46;
                 break;
               }
 
               throw _iteratorError3;
 
-            case 31:
-              return _context2.finish(28);
+            case 46:
+              return _context2.finish(43);
 
-            case 32:
-              return _context2.finish(25);
+            case 47:
+              return _context2.finish(40);
 
-            case 33:
+            case 48:
               if (!(type === TYPE_ONE)) {
-                _context2.next = 37;
+                _context2.next = 52;
                 break;
               }
 
               return _context2.abrupt('return', returnData[0]);
 
-            case 37:
+            case 52:
               return _context2.abrupt('return', returnData);
 
-            case 38:
+            case 53:
             case 'end':
               return _context2.stop();
           }
         }
-      }, _callee2, _this, [[9, 21, 25, 33], [26,, 28, 32]]);
+      }, _callee2, _this, [[9, 36, 40, 48], [41,, 43, 47]]);
     }));
 
     return function (_x4, _x5) {

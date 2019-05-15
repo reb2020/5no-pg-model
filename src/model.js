@@ -11,7 +11,7 @@ class Model {
     _change = {}
     _join = null
 
-    constructor(data = {}) {
+    constructor() {
       if (!this.constructor.schema) {
         throw new Error("Model doesn't have schema")
       }
@@ -56,16 +56,14 @@ class Model {
           },
         })
       }
-
-      this.setData(data)
     }
 
     static getSchema() {
       return new ModelSchema(this.schema)
     }
 
-    setData = (data) => {
-      const filterData = this._schema.filter(data)
+    setData = async(data) => {
+      const filterData = await this._schema.filter(data)
       Object.keys(filterData).forEach((key) => {
         if (this._schema.primaryKeys.includes(key)) {
           this._schema.primaryKeysValue[key] = filterData[key]
@@ -81,43 +79,50 @@ class Model {
         if (type === 'many' && typeOfValue === 'array') {
           this._data[name] = new Many(RelationModel)
           for (let item of data[name]) {
-            this._data[name].add(item)
+            await this._data[name].add(item)
           }
         } else if (type === 'join' && typeOfValue === 'array') {
           this._data[name] = new Join(RelationModel, join)
           for (let item of data[name]) {
             let joinData = Object.assign({}, item)
             joinData[foreign] = data[local]
-            this._data[name].add(joinData)
+            await this._data[name].add(joinData)
           }
         } else if (type === 'one' && typeOfValue === 'object') {
-          this._data[name] = new RelationModel(data[name])
+          this._data[name] = new RelationModel()
+          await this._data[name].setData(data[name])
         }
       }
     }
 
-    getData = () => {
-      return this._schema.filter(this._schema.addUpdatableFields(this._data, this._change))
+    getData = async(allSave = false) => {
+      return this._schema.filter(this._schema.addUpdatableFields(this._data, this._change, allSave))
     }
 
-    save = async(transactionMode = true) => {
+    saveByData = async(data) => {
+      await this.setData(data)
+      return this.save(true, true)
+    }
+
+    save = async(transactionMode = true, allSave = false) => {
       if (this._join) {
         return this._join.save(transactionMode)
       }
       try {
         const db = this._schema.getBuilder()
-        const data = await this._schema.validate(this.getData())
+        const dataAfterFilter = await this.getData(allSave)
+        const data = await this._schema.validate(dataAfterFilter)
 
         const change = Object.keys(this._change)
 
         if (!this._schema.isUpdatable()) {
           db.insert(data)
-        } else if (change.length) {
+        } else if (change.length || allSave === true) {
           let updateData = {}
           change.forEach((key) => {
             updateData[key] = data[key]
           })
-          db.update(updateData)
+          db.update(allSave === true ? data : updateData)
         } else {
           return true
         }
@@ -127,8 +132,8 @@ class Model {
         if (transactionMode) await transaction.begin()
 
         const result = await db.execute()
-        this.setData(result.rows[0])
-        await this._schema.saveCascade(this._data)
+        await this.setData(result.rows[0])
+        await this._schema.saveCascade(this._data, allSave)
 
         if (transactionMode) await transaction.commit()
 
@@ -163,7 +168,7 @@ class Model {
       }
     }
 
-    toJSON = () => {
+    toJSON = async() => {
       let dataJSON = {}
 
       if (this._schema.primaryKeys.length) {
@@ -172,7 +177,8 @@ class Model {
         }
       }
 
-      dataJSON = Object.assign(dataJSON, this.getData())
+      const dataAfterFilter = await this.getData()
+      dataJSON = Object.assign(dataJSON, dataAfterFilter)
 
       for (let relationData of this._schema.relations) {
         const {name} = relationData
@@ -182,10 +188,10 @@ class Model {
         if (type === 'many' || type === 'join') {
           dataJSON[name] = []
           for (let item of data) {
-            dataJSON[name].push(item.toJSON())
+            dataJSON[name].push(await item.toJSON())
           }
         } else {
-          dataJSON[name] = data.toJSON()
+          dataJSON[name] = await data.toJSON()
         }
       }
 

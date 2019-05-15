@@ -283,6 +283,58 @@ const jsonTestData = {
   },
 }
 
+const jsonUpdateTestData = {
+  'Addresses': [
+    {
+      'created_at': sinon.match(dateRegex),
+      'id': sinon.match(uuidV4Regex),
+      'postcode': '100501',
+      'street_name': 'Test',
+      'updated_at': sinon.match(dateRegex),
+      'user_id': sinon.match(uuidV4Regex),
+    },
+    {
+      'created_at': sinon.match(dateRegex),
+      'id': sinon.match(uuidV4Regex),
+      'postcode': '100508',
+      'street_name': 'Test1',
+      'updated_at': sinon.match(dateRegex),
+      'user_id': sinon.match(uuidV4Regex),
+    },
+  ],
+  'Roles': [
+    {
+      'created_at': sinon.match(dateRegex),
+      'id': sinon.match(uuidV4Regex),
+      'role': 'Admin',
+      'updated_at': sinon.match(dateRegex),
+    },
+    {
+      'created_at': sinon.match(dateRegex),
+      'id': sinon.match(uuidV4Regex),
+      'role': 'Customer',
+      'updated_at': sinon.match(dateRegex),
+    },
+  ],
+  'Info': {
+    'created_at': sinon.match(dateRegex),
+    'first_name': 'Aleks21',
+    'id': sinon.match(uuidV4Regex),
+    'last_name': 'Sokol21',
+    'updated_at': sinon.match(dateRegex),
+    'user_id': sinon.match(uuidV4Regex),
+  },
+  'created_at': sinon.match(dateRegex),
+  'email': 'test@test.me',
+  'id': sinon.match(uuidV4Regex),
+  'public_key': 'test_1231',
+  'secret_key': 'test_3331',
+  'updated_at': sinon.match(dateRegex),
+  'personalised': {
+    test: 100,
+  },
+}
+
 const jsonTestUpdateData = {
   'Addresses': [
     {
@@ -393,11 +445,11 @@ describe('Model', () => {
       testNewUser.personalised = {
         test: 100,
       }
-      testNewUser.Addresses.add({
+      await testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
       })
-      testNewUser.Addresses.add({
+      await testNewUser.Addresses.add({
         street_name: 'Test1',
         postcode: '100502',
       })
@@ -420,19 +472,19 @@ describe('Model', () => {
       testNewUser.personalised = {
         test: 100,
       }
-      testNewUser.Addresses.add({
+      await testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
       })
-      testNewUser.Addresses.add({
+      await testNewUser.Addresses.add({
         street_name: 'Test1',
         postcode: '100502',
       })
       testNewUser.Info.first_name = 'Aleks2'
       testNewUser.Info.last_name = 'Sokol2'
 
-      testNewUser.Roles.add(adminRole)
-      testNewUser.Roles.add(customerRole)
+      await testNewUser.Roles.add(adminRole)
+      await testNewUser.Roles.add(customerRole)
 
       const returnData = await testNewUser.save()
 
@@ -456,17 +508,38 @@ describe('Model', () => {
       expect(returnData).to.eql(true)
     })
 
+    it('create by json', async() => {
+      const testNewUser = new Users()
+
+      const newData = {
+        email: 'test2010@test.me',
+        public_key: 'test_123',
+        secret_key: 'test_333',
+        personalised: {
+          test: 100,
+        },
+        Addresses: [{
+          street_name: 'Test 100',
+          postcode: '100501',
+        }],
+      }
+
+      const returnData = await testNewUser.saveByData(newData)
+
+      expect(returnData).to.eql(true)
+    })
+
     it('create duplicate', async() => {
       const testNewUser = new Users()
 
       testNewUser.email = 'test@test.me'
       testNewUser.public_key = 'test_123'
       testNewUser.secret_key = 'test_333'
-      testNewUser.Addresses.add({
+      await testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
       })
-      testNewUser.Addresses.add({
+      await testNewUser.Addresses.add({
         street_name: 'Test1',
         postcode: '100502',
       })
@@ -504,10 +577,35 @@ describe('Model', () => {
       data.secret_key = 'test_33309'
 
       await data.save()
+      const testData = await data.toJSON()
 
       let cb = sinon.spy()
-      cb(data.toJSON())
+      cb(testData)
       cb.should.have.been.calledWith(jsonTestUpdateData)
+    })
+
+    it('saveByData', async() => {
+      const dataJson = await Manager.build(Users, true).find(usersId)
+      let cb = sinon.spy()
+      cb(dataJson)
+      cb.should.have.been.calledWith(jsonTestUpdateData)
+
+      dataJson.Addresses[0].postcode = '100501'
+      dataJson.Info.first_name = 'Aleks21'
+      dataJson.Info.last_name = 'Sokol21'
+      dataJson.public_key = 'test_1231'
+      dataJson.secret_key = 'test_3331'
+
+      const newUserData = new Users()
+      await newUserData.saveByData(dataJson)
+
+      const data = await newUserData.toJSON()
+
+      // console.warn(dataJson)
+      // console.warn(newUserData)
+
+      cb(data)
+      cb.should.have.been.calledWith(jsonUpdateTestData)
     })
 
     it('delete one item', async() => {

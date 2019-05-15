@@ -80,9 +80,10 @@ class Build {
         if (this._isRelations === true) {
           returnData.push(item)
         } else {
-          let modelData = new Model(item)
+          let modelData = new Model()
+          await modelData.setData(item)
           if (this._json === true) {
-            returnData.push(modelData.toJSON())
+            returnData.push(await modelData.toJSON())
           } else {
             returnData.push(modelData)
           }

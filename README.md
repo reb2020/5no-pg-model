@@ -61,9 +61,10 @@ DATABASE_QUERY_LOG=true
 ## Model Methods
 
 ```js
-save() // Save changes
-delete() // Delete entries
-toJSON() // Return to JSON format
+async save() // Save changes
+async saveByData(data) // Save changes by Json data
+async delete() // Delete entries
+async toJSON() // Return to JSON format
 ```
 
 
@@ -319,11 +320,11 @@ testNewUser.personalised = {
   test: 100
 }
       
-testNewUser.Addresses.add({
+await testNewUser.Addresses.add({
   street_name: 'Test',
   postcode: '100500',
 })
-testNewUser.Addresses.add({
+await testNewUser.Addresses.add({
   street_name: 'Test1',
   postcode: '100502',
 })
@@ -331,7 +332,7 @@ testNewUser.Addresses.add({
 testNewUser.Info.first_name = 'Aleks2'
 testNewUser.Info.last_name = 'Sokol2'
 
-testNewUser.Roles.add(roleModel)
+await testNewUser.Roles.add(roleModel)
 
 const returnData = await testNewUser.save()
 
@@ -409,6 +410,29 @@ data.Info.last_name = 'Sokol200'
 data.secret_key = 'test_33309'
 
 await data.save()
+
+```
+
+
+SAVE BY DATA
+
+```js
+const testNewUser = new Users()
+
+const newData = {
+        email: 'test2010@test.me',
+        public_key: 'test_123',
+        secret_key: 'test_333',
+        personalised: {
+          test: 100,
+        },
+        Addresses: [{
+          street_name: 'Test 100',
+          postcode: '100501',
+        }]
+}
+
+const returnData = await testNewUser.saveByData(newData)
 
 ```
 

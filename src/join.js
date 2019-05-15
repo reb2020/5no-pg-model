@@ -14,17 +14,19 @@ class Join extends Array {
     })
   }
 
-  add(data = {}) {
+  async add(data = {}) {
     const RelationModel = this.join.model
     const ModelJoin = this.model
 
     let dataJoin = Object.assign({}, data)
     dataJoin[this.join.local] = data[this.join.foreign]
 
-    const InitModelJoin = new ModelJoin(dataJoin)
+    const InitModelJoin = new ModelJoin()
+    await InitModelJoin.setData(dataJoin)
 
     if (typeof data === 'object' && data.constructor.name.toLowerCase() === 'object') {
-      const InitRelationModel = new RelationModel(data)
+      const InitRelationModel = new RelationModel()
+      await InitRelationModel.setData(data)
       InitRelationModel._join = InitModelJoin
       this.push(InitRelationModel)
     } else {

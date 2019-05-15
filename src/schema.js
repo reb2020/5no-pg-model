@@ -30,7 +30,7 @@ class ModelSchema {
     return false
   }
 
-  addUpdatableFields = (data, change) => {
+  addUpdatableFields = (data, change, allSave = false) => {
     const nowDate = new Date()
     let returnData = {}
 
@@ -38,7 +38,7 @@ class ModelSchema {
       returnData[this.createdField] = nowDate
     }
 
-    if (this.updatedField && Object.keys(change).length > 0) {
+    if (this.updatedField && (Object.keys(change).length > 0 || allSave === true)) {
       returnData[this.updatedField] = nowDate
     }
 
@@ -57,7 +57,7 @@ class ModelSchema {
     return db
   }
 
-  cascadeExecute = async(method, data) => {
+  cascadeExecute = async(method, data, allSave = false) => {
     for (let relationData of this.relations) {
       const {name, local, foreign, cascade} = relationData
 
@@ -88,7 +88,7 @@ class ModelSchema {
             }
             let result = null
             if (method === 'save') {
-              result = await item.save(false)
+              result = await item.save(false, allSave)
             } else if (method === 'delete') {
               result = await item.delete(false)
             }
@@ -102,7 +102,7 @@ class ModelSchema {
           }
           let result = null
           if (method === 'save') {
-            result = await data[name].save(false)
+            result = await data[name].save(false, allSave)
           } else if (method === 'delete') {
             result = await data[name].delete(false)
           }
@@ -114,8 +114,8 @@ class ModelSchema {
     }
   }
 
-  saveCascade = async(data) => {
-    await this.cascadeExecute('save', data)
+  saveCascade = async(data, allSave = false) => {
+    await this.cascadeExecute('save', data, allSave)
   }
 
   deleteCascade = async(data) => {

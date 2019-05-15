@@ -58,6 +58,8 @@ var _initialiseProps = function _initialiseProps() {
   };
 
   this.addUpdatableFields = function (data, change) {
+    var allSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
     var nowDate = new Date();
     var returnData = {};
 
@@ -65,7 +67,7 @@ var _initialiseProps = function _initialiseProps() {
       returnData[_this.createdField] = nowDate;
     }
 
-    if (_this.updatedField && Object.keys(change).length > 0) {
+    if (_this.updatedField && (Object.keys(change).length > 0 || allSave === true)) {
       returnData[_this.updatedField] = nowDate;
     }
 
@@ -107,6 +109,8 @@ var _initialiseProps = function _initialiseProps() {
 
   this.cascadeExecute = function () {
     var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(method, data) {
+      var allSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
       var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, relationData, name, local, foreign, cascade, type, localValue, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, item, result, _result;
 
       return _regenerator2.default.wrap(function _callee$(_context) {
@@ -187,7 +191,7 @@ var _initialiseProps = function _initialiseProps() {
               }
 
               _context.next = 27;
-              return item.save(false);
+              return item.save(false, allSave);
 
             case 27:
               result = _context.sent;
@@ -269,7 +273,7 @@ var _initialiseProps = function _initialiseProps() {
               }
 
               _context.next = 60;
-              return data[name].save(false);
+              return data[name].save(false, allSave);
 
             case 60:
               _result = _context.sent;
@@ -343,19 +347,20 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee, _this, [[3, 74, 78, 86], [18, 41, 45, 53], [46,, 48, 52], [79,, 81, 85]]);
     }));
 
-    return function (_x, _x2) {
+    return function (_x2, _x3) {
       return _ref.apply(this, arguments);
     };
   }();
 
   this.saveCascade = function () {
     var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(data) {
+      var allSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this.cascadeExecute('save', data);
+              return _this.cascadeExecute('save', data, allSave);
 
             case 2:
             case 'end':
@@ -365,7 +370,7 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee2, _this);
     }));
 
-    return function (_x3) {
+    return function (_x5) {
       return _ref2.apply(this, arguments);
     };
   }();
@@ -387,7 +392,7 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee3, _this);
     }));
 
-    return function (_x4) {
+    return function (_x7) {
       return _ref3.apply(this, arguments);
     };
   }();

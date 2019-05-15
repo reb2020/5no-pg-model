@@ -24,9 +24,9 @@ var _many = require('./many');
 
 var _many2 = _interopRequireDefault(_many);
 
-var _join2 = require('./join');
+var _join = require('./join');
 
-var _join3 = _interopRequireDefault(_join2);
+var _join2 = _interopRequireDefault(_join);
 
 var _helper = require('./helper');
 
@@ -36,10 +36,709 @@ var Model = function () {
   function Model() {
     var _this = this;
 
-    var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, Model);
+    this._schema = null;
+    this._data = {};
+    this._change = {};
+    this._join = null;
 
-    _initialiseProps.call(this);
+    this.setData = function () {
+      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(data) {
+        var filterData, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, relationData, name, type, RelationModel, join, foreign, local, typeOfValue, _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, item, _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, _item, joinData;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return _this._schema.filter(data);
+
+              case 2:
+                filterData = _context.sent;
+
+                Object.keys(filterData).forEach(function (key) {
+                  if (_this._schema.primaryKeys.includes(key)) {
+                    _this._schema.primaryKeysValue[key] = filterData[key];
+                  } else if (Object.keys(_this._schema.columns).includes(key)) {
+                    _this._data[key] = filterData[key];
+                  }
+                });
+
+                _iteratorNormalCompletion = true;
+                _didIteratorError = false;
+                _iteratorError = undefined;
+                _context.prev = 7;
+                _iterator = _this._schema.relations[Symbol.iterator]();
+
+              case 9:
+                if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
+                  _context.next = 82;
+                  break;
+                }
+
+                relationData = _step.value;
+                name = relationData.name, type = relationData.type, RelationModel = relationData.model, join = relationData.join, foreign = relationData.foreign, local = relationData.local;
+                typeOfValue = (0, _helper.getTypeOfValue)(data[name]);
+
+                if (!(type === 'many' && typeOfValue === 'array')) {
+                  _context.next = 43;
+                  break;
+                }
+
+                _this._data[name] = new _many2.default(RelationModel);
+                _iteratorNormalCompletion2 = true;
+                _didIteratorError2 = false;
+                _iteratorError2 = undefined;
+                _context.prev = 18;
+                _iterator2 = data[name][Symbol.iterator]();
+
+              case 20:
+                if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
+                  _context.next = 27;
+                  break;
+                }
+
+                item = _step2.value;
+                _context.next = 24;
+                return _this._data[name].add(item);
+
+              case 24:
+                _iteratorNormalCompletion2 = true;
+                _context.next = 20;
+                break;
+
+              case 27:
+                _context.next = 33;
+                break;
+
+              case 29:
+                _context.prev = 29;
+                _context.t0 = _context['catch'](18);
+                _didIteratorError2 = true;
+                _iteratorError2 = _context.t0;
+
+              case 33:
+                _context.prev = 33;
+                _context.prev = 34;
+
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                  _iterator2.return();
+                }
+
+              case 36:
+                _context.prev = 36;
+
+                if (!_didIteratorError2) {
+                  _context.next = 39;
+                  break;
+                }
+
+                throw _iteratorError2;
+
+              case 39:
+                return _context.finish(36);
+
+              case 40:
+                return _context.finish(33);
+
+              case 41:
+                _context.next = 79;
+                break;
+
+              case 43:
+                if (!(type === 'join' && typeOfValue === 'array')) {
+                  _context.next = 75;
+                  break;
+                }
+
+                _this._data[name] = new _join2.default(RelationModel, join);
+                _iteratorNormalCompletion3 = true;
+                _didIteratorError3 = false;
+                _iteratorError3 = undefined;
+                _context.prev = 48;
+                _iterator3 = data[name][Symbol.iterator]();
+
+              case 50:
+                if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
+                  _context.next = 59;
+                  break;
+                }
+
+                _item = _step3.value;
+                joinData = Object.assign({}, _item);
+
+                joinData[foreign] = data[local];
+                _context.next = 56;
+                return _this._data[name].add(joinData);
+
+              case 56:
+                _iteratorNormalCompletion3 = true;
+                _context.next = 50;
+                break;
+
+              case 59:
+                _context.next = 65;
+                break;
+
+              case 61:
+                _context.prev = 61;
+                _context.t1 = _context['catch'](48);
+                _didIteratorError3 = true;
+                _iteratorError3 = _context.t1;
+
+              case 65:
+                _context.prev = 65;
+                _context.prev = 66;
+
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                  _iterator3.return();
+                }
+
+              case 68:
+                _context.prev = 68;
+
+                if (!_didIteratorError3) {
+                  _context.next = 71;
+                  break;
+                }
+
+                throw _iteratorError3;
+
+              case 71:
+                return _context.finish(68);
+
+              case 72:
+                return _context.finish(65);
+
+              case 73:
+                _context.next = 79;
+                break;
+
+              case 75:
+                if (!(type === 'one' && typeOfValue === 'object')) {
+                  _context.next = 79;
+                  break;
+                }
+
+                _this._data[name] = new RelationModel();
+                _context.next = 79;
+                return _this._data[name].setData(data[name]);
+
+              case 79:
+                _iteratorNormalCompletion = true;
+                _context.next = 9;
+                break;
+
+              case 82:
+                _context.next = 88;
+                break;
+
+              case 84:
+                _context.prev = 84;
+                _context.t2 = _context['catch'](7);
+                _didIteratorError = true;
+                _iteratorError = _context.t2;
+
+              case 88:
+                _context.prev = 88;
+                _context.prev = 89;
+
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                  _iterator.return();
+                }
+
+              case 91:
+                _context.prev = 91;
+
+                if (!_didIteratorError) {
+                  _context.next = 94;
+                  break;
+                }
+
+                throw _iteratorError;
+
+              case 94:
+                return _context.finish(91);
+
+              case 95:
+                return _context.finish(88);
+
+              case 96:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this, [[7, 84, 88, 96], [18, 29, 33, 41], [34,, 36, 40], [48, 61, 65, 73], [66,, 68, 72], [89,, 91, 95]]);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    this.getData = function () {
+      var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
+        var allSave = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                return _context2.abrupt('return', _this._schema.filter(_this._schema.addUpdatableFields(_this._data, _this._change, allSave)));
+
+              case 1:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, _this);
+      }));
+
+      return function () {
+        return _ref2.apply(this, arguments);
+      };
+    }();
+
+    this.saveByData = function () {
+      var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(data) {
+        return _regenerator2.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return _this.setData(data);
+
+              case 2:
+                return _context3.abrupt('return', _this.save(true, true));
+
+              case 3:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, _this);
+      }));
+
+      return function (_x3) {
+        return _ref3.apply(this, arguments);
+      };
+    }();
+
+    this.save = function () {
+      var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4() {
+        var transactionMode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+        var allSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        var db, dataAfterFilter, data, change, updateData, result;
+        return _regenerator2.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                if (!_this._join) {
+                  _context4.next = 2;
+                  break;
+                }
+
+                return _context4.abrupt('return', _this._join.save(transactionMode));
+
+              case 2:
+                _context4.prev = 2;
+                db = _this._schema.getBuilder();
+                _context4.next = 6;
+                return _this.getData(allSave);
+
+              case 6:
+                dataAfterFilter = _context4.sent;
+                _context4.next = 9;
+                return _this._schema.validate(dataAfterFilter);
+
+              case 9:
+                data = _context4.sent;
+                change = Object.keys(_this._change);
+
+                if (_this._schema.isUpdatable()) {
+                  _context4.next = 15;
+                  break;
+                }
+
+                db.insert(data);
+                _context4.next = 22;
+                break;
+
+              case 15:
+                if (!(change.length || allSave === true)) {
+                  _context4.next = 21;
+                  break;
+                }
+
+                updateData = {};
+
+                change.forEach(function (key) {
+                  updateData[key] = data[key];
+                });
+                db.update(allSave === true ? data : updateData);
+                _context4.next = 22;
+                break;
+
+              case 21:
+                return _context4.abrupt('return', true);
+
+              case 22:
+
+                _this._change = {};
+
+                if (!transactionMode) {
+                  _context4.next = 26;
+                  break;
+                }
+
+                _context4.next = 26;
+                return _helper.transaction.begin();
+
+              case 26:
+                _context4.next = 28;
+                return db.execute();
+
+              case 28:
+                result = _context4.sent;
+                _context4.next = 31;
+                return _this.setData(result.rows[0]);
+
+              case 31:
+                _context4.next = 33;
+                return _this._schema.saveCascade(_this._data, allSave);
+
+              case 33:
+                if (!transactionMode) {
+                  _context4.next = 36;
+                  break;
+                }
+
+                _context4.next = 36;
+                return _helper.transaction.commit();
+
+              case 36:
+                return _context4.abrupt('return', true);
+
+              case 39:
+                _context4.prev = 39;
+                _context4.t0 = _context4['catch'](2);
+
+                if (!transactionMode) {
+                  _context4.next = 44;
+                  break;
+                }
+
+                _context4.next = 44;
+                return _helper.transaction.rollback();
+
+              case 44:
+                return _context4.abrupt('return', (0, _helper.errors)(_context4.t0));
+
+              case 45:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        }, _callee4, _this, [[2, 39]]);
+      }));
+
+      return function () {
+        return _ref4.apply(this, arguments);
+      };
+    }();
+
+    this.delete = function () {
+      var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
+        var transactionMode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+        var db;
+        return _regenerator2.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                if (!_this._join) {
+                  _context5.next = 2;
+                  break;
+                }
+
+                return _context5.abrupt('return', _this._join.delete(transactionMode));
+
+              case 2:
+                _context5.prev = 2;
+                db = _this._schema.getBuilder();
+
+                if (_this._schema.isUpdatable()) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                throw new Error("Doesn't have primaryKeyValue");
+
+              case 6:
+                if (!transactionMode) {
+                  _context5.next = 9;
+                  break;
+                }
+
+                _context5.next = 9;
+                return _helper.transaction.begin();
+
+              case 9:
+                _context5.next = 11;
+                return _this._schema.deleteCascade(_this._data);
+
+              case 11:
+                _context5.next = 13;
+                return db.delete().execute();
+
+              case 13:
+                if (!transactionMode) {
+                  _context5.next = 16;
+                  break;
+                }
+
+                _context5.next = 16;
+                return _helper.transaction.commit();
+
+              case 16:
+                return _context5.abrupt('return', true);
+
+              case 19:
+                _context5.prev = 19;
+                _context5.t0 = _context5['catch'](2);
+
+                if (!transactionMode) {
+                  _context5.next = 24;
+                  break;
+                }
+
+                _context5.next = 24;
+                return _helper.transaction.rollback();
+
+              case 24:
+                return _context5.abrupt('return', (0, _helper.errors)(_context5.t0));
+
+              case 25:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, _this, [[2, 19]]);
+      }));
+
+      return function () {
+        return _ref5.apply(this, arguments);
+      };
+    }();
+
+    this.toJSON = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6() {
+      var dataJSON, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, primaryKey, dataAfterFilter, _iteratorNormalCompletion5, _didIteratorError5, _iteratorError5, _iterator5, _step5, relationData, name, data, type, _iteratorNormalCompletion6, _didIteratorError6, _iteratorError6, _iterator6, _step6, item;
+
+      return _regenerator2.default.wrap(function _callee6$(_context6) {
+        while (1) {
+          switch (_context6.prev = _context6.next) {
+            case 0:
+              dataJSON = {};
+
+              if (!_this._schema.primaryKeys.length) {
+                _context6.next = 21;
+                break;
+              }
+
+              _iteratorNormalCompletion4 = true;
+              _didIteratorError4 = false;
+              _iteratorError4 = undefined;
+              _context6.prev = 5;
+
+              for (_iterator4 = _this._schema.primaryKeys[Symbol.iterator](); !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                primaryKey = _step4.value;
+
+                dataJSON[primaryKey] = _this._schema.primaryKeysValue[primaryKey];
+              }
+              _context6.next = 13;
+              break;
+
+            case 9:
+              _context6.prev = 9;
+              _context6.t0 = _context6['catch'](5);
+              _didIteratorError4 = true;
+              _iteratorError4 = _context6.t0;
+
+            case 13:
+              _context6.prev = 13;
+              _context6.prev = 14;
+
+              if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                _iterator4.return();
+              }
+
+            case 16:
+              _context6.prev = 16;
+
+              if (!_didIteratorError4) {
+                _context6.next = 19;
+                break;
+              }
+
+              throw _iteratorError4;
+
+            case 19:
+              return _context6.finish(16);
+
+            case 20:
+              return _context6.finish(13);
+
+            case 21:
+              _context6.next = 23;
+              return _this.getData();
+
+            case 23:
+              dataAfterFilter = _context6.sent;
+
+              dataJSON = Object.assign(dataJSON, dataAfterFilter);
+
+              _iteratorNormalCompletion5 = true;
+              _didIteratorError5 = false;
+              _iteratorError5 = undefined;
+              _context6.prev = 28;
+              _iterator5 = _this._schema.relations[Symbol.iterator]();
+
+            case 30:
+              if (_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done) {
+                _context6.next = 74;
+                break;
+              }
+
+              relationData = _step5.value;
+              name = relationData.name;
+              data = _this._data[name];
+              type = (0, _helper.getTypeOfValue)(data);
+
+              if (!(type === 'many' || type === 'join')) {
+                _context6.next = 68;
+                break;
+              }
+
+              dataJSON[name] = [];
+              _iteratorNormalCompletion6 = true;
+              _didIteratorError6 = false;
+              _iteratorError6 = undefined;
+              _context6.prev = 40;
+              _iterator6 = data[Symbol.iterator]();
+
+            case 42:
+              if (_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done) {
+                _context6.next = 52;
+                break;
+              }
+
+              item = _step6.value;
+              _context6.t1 = dataJSON[name];
+              _context6.next = 47;
+              return item.toJSON();
+
+            case 47:
+              _context6.t2 = _context6.sent;
+
+              _context6.t1.push.call(_context6.t1, _context6.t2);
+
+            case 49:
+              _iteratorNormalCompletion6 = true;
+              _context6.next = 42;
+              break;
+
+            case 52:
+              _context6.next = 58;
+              break;
+
+            case 54:
+              _context6.prev = 54;
+              _context6.t3 = _context6['catch'](40);
+              _didIteratorError6 = true;
+              _iteratorError6 = _context6.t3;
+
+            case 58:
+              _context6.prev = 58;
+              _context6.prev = 59;
+
+              if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                _iterator6.return();
+              }
+
+            case 61:
+              _context6.prev = 61;
+
+              if (!_didIteratorError6) {
+                _context6.next = 64;
+                break;
+              }
+
+              throw _iteratorError6;
+
+            case 64:
+              return _context6.finish(61);
+
+            case 65:
+              return _context6.finish(58);
+
+            case 66:
+              _context6.next = 71;
+              break;
+
+            case 68:
+              _context6.next = 70;
+              return data.toJSON();
+
+            case 70:
+              dataJSON[name] = _context6.sent;
+
+            case 71:
+              _iteratorNormalCompletion5 = true;
+              _context6.next = 30;
+              break;
+
+            case 74:
+              _context6.next = 80;
+              break;
+
+            case 76:
+              _context6.prev = 76;
+              _context6.t4 = _context6['catch'](28);
+              _didIteratorError5 = true;
+              _iteratorError5 = _context6.t4;
+
+            case 80:
+              _context6.prev = 80;
+              _context6.prev = 81;
+
+              if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                _iterator5.return();
+              }
+
+            case 83:
+              _context6.prev = 83;
+
+              if (!_didIteratorError5) {
+                _context6.next = 86;
+                break;
+              }
+
+              throw _iteratorError5;
+
+            case 86:
+              return _context6.finish(83);
+
+            case 87:
+              return _context6.finish(80);
+
+            case 88:
+              return _context6.abrupt('return', dataJSON);
+
+            case 89:
+            case 'end':
+              return _context6.stop();
+          }
+        }
+      }, _callee6, _this, [[5, 9, 13, 21], [14,, 16, 20], [28, 76, 80, 88], [40, 54, 58, 66], [59,, 61, 65], [81,, 83, 87]]);
+    }));
 
     if (!this.constructor.schema) {
       throw new Error("Model doesn't have schema");
@@ -68,13 +767,13 @@ var Model = function () {
       });
     });
 
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+    var _iteratorNormalCompletion7 = true;
+    var _didIteratorError7 = false;
+    var _iteratorError7 = undefined;
 
     try {
       var _loop = function _loop() {
-        var relationData = _step.value;
+        var relationData = _step7.value;
         var name = relationData.name,
             type = relationData.type,
             RelationModel = relationData.model,
@@ -88,7 +787,7 @@ var Model = function () {
               } else if (type === 'many') {
                 _this._data[name] = new _many2.default(RelationModel);
               } else if (type === 'join') {
-                _this._data[name] = new _join3.default(RelationModel, join);
+                _this._data[name] = new _join2.default(RelationModel, join);
               }
             }
             return _this._data[name];
@@ -96,25 +795,23 @@ var Model = function () {
         });
       };
 
-      for (var _iterator = this._schema.relations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      for (var _iterator7 = this._schema.relations[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
         _loop();
       }
     } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
+      _didIteratorError7 = true;
+      _iteratorError7 = err;
     } finally {
       try {
-        if (!_iteratorNormalCompletion && _iterator.return) {
-          _iterator.return();
+        if (!_iteratorNormalCompletion7 && _iterator7.return) {
+          _iterator7.return();
         }
       } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
+        if (_didIteratorError7) {
+          throw _iteratorError7;
         }
       }
     }
-
-    this.setData(data);
   }
 
   (0, _createClass3.default)(Model, null, [{
@@ -128,407 +825,5 @@ var Model = function () {
 
 Model.schema = null;
 
-var _initialiseProps = function _initialiseProps() {
-  var _this2 = this;
-
-  this._schema = null;
-  this._data = {};
-  this._change = {};
-  this._join = null;
-
-  this.setData = function (data) {
-    var filterData = _this2._schema.filter(data);
-    Object.keys(filterData).forEach(function (key) {
-      if (_this2._schema.primaryKeys.includes(key)) {
-        _this2._schema.primaryKeysValue[key] = filterData[key];
-      } else if (Object.keys(_this2._schema.columns).includes(key)) {
-        _this2._data[key] = filterData[key];
-      }
-    });
-
-    var _iteratorNormalCompletion2 = true;
-    var _didIteratorError2 = false;
-    var _iteratorError2 = undefined;
-
-    try {
-      for (var _iterator2 = _this2._schema.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-        var relationData = _step2.value;
-        var _name = relationData.name,
-            _type = relationData.type,
-            _RelationModel = relationData.model,
-            _join = relationData.join,
-            foreign = relationData.foreign,
-            local = relationData.local;
-
-        var typeOfValue = (0, _helper.getTypeOfValue)(data[_name]);
-
-        if (_type === 'many' && typeOfValue === 'array') {
-          _this2._data[_name] = new _many2.default(_RelationModel);
-          var _iteratorNormalCompletion3 = true;
-          var _didIteratorError3 = false;
-          var _iteratorError3 = undefined;
-
-          try {
-            for (var _iterator3 = data[_name][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var item = _step3.value;
-
-              _this2._data[_name].add(item);
-            }
-          } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                _iterator3.return();
-              }
-            } finally {
-              if (_didIteratorError3) {
-                throw _iteratorError3;
-              }
-            }
-          }
-        } else if (_type === 'join' && typeOfValue === 'array') {
-          _this2._data[_name] = new _join3.default(_RelationModel, _join);
-          var _iteratorNormalCompletion4 = true;
-          var _didIteratorError4 = false;
-          var _iteratorError4 = undefined;
-
-          try {
-            for (var _iterator4 = data[_name][Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-              var _item = _step4.value;
-
-              var joinData = Object.assign({}, _item);
-              joinData[foreign] = data[local];
-              _this2._data[_name].add(joinData);
-            }
-          } catch (err) {
-            _didIteratorError4 = true;
-            _iteratorError4 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                _iterator4.return();
-              }
-            } finally {
-              if (_didIteratorError4) {
-                throw _iteratorError4;
-              }
-            }
-          }
-        } else if (_type === 'one' && typeOfValue === 'object') {
-          _this2._data[_name] = new _RelationModel(data[_name]);
-        }
-      }
-    } catch (err) {
-      _didIteratorError2 = true;
-      _iteratorError2 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-          _iterator2.return();
-        }
-      } finally {
-        if (_didIteratorError2) {
-          throw _iteratorError2;
-        }
-      }
-    }
-  };
-
-  this.getData = function () {
-    return _this2._schema.filter(_this2._schema.addUpdatableFields(_this2._data, _this2._change));
-  };
-
-  this.save = function () {
-    var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
-      var transactionMode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-      var db, data, change, updateData, result;
-      return _regenerator2.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              if (!_this2._join) {
-                _context.next = 2;
-                break;
-              }
-
-              return _context.abrupt('return', _this2._join.save(transactionMode));
-
-            case 2:
-              _context.prev = 2;
-              db = _this2._schema.getBuilder();
-              _context.next = 6;
-              return _this2._schema.validate(_this2.getData());
-
-            case 6:
-              data = _context.sent;
-              change = Object.keys(_this2._change);
-
-              if (_this2._schema.isUpdatable()) {
-                _context.next = 12;
-                break;
-              }
-
-              db.insert(data);
-              _context.next = 19;
-              break;
-
-            case 12:
-              if (!change.length) {
-                _context.next = 18;
-                break;
-              }
-
-              updateData = {};
-
-              change.forEach(function (key) {
-                updateData[key] = data[key];
-              });
-              db.update(updateData);
-              _context.next = 19;
-              break;
-
-            case 18:
-              return _context.abrupt('return', true);
-
-            case 19:
-
-              _this2._change = {};
-
-              if (!transactionMode) {
-                _context.next = 23;
-                break;
-              }
-
-              _context.next = 23;
-              return _helper.transaction.begin();
-
-            case 23:
-              _context.next = 25;
-              return db.execute();
-
-            case 25:
-              result = _context.sent;
-
-              _this2.setData(result.rows[0]);
-              _context.next = 29;
-              return _this2._schema.saveCascade(_this2._data);
-
-            case 29:
-              if (!transactionMode) {
-                _context.next = 32;
-                break;
-              }
-
-              _context.next = 32;
-              return _helper.transaction.commit();
-
-            case 32:
-              return _context.abrupt('return', true);
-
-            case 35:
-              _context.prev = 35;
-              _context.t0 = _context['catch'](2);
-
-              if (!transactionMode) {
-                _context.next = 40;
-                break;
-              }
-
-              _context.next = 40;
-              return _helper.transaction.rollback();
-
-            case 40:
-              return _context.abrupt('return', (0, _helper.errors)(_context.t0));
-
-            case 41:
-            case 'end':
-              return _context.stop();
-          }
-        }
-      }, _callee, _this2, [[2, 35]]);
-    }));
-
-    return function () {
-      return _ref.apply(this, arguments);
-    };
-  }();
-
-  this.delete = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2() {
-      var transactionMode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-      var db;
-      return _regenerator2.default.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              if (!_this2._join) {
-                _context2.next = 2;
-                break;
-              }
-
-              return _context2.abrupt('return', _this2._join.delete(transactionMode));
-
-            case 2:
-              _context2.prev = 2;
-              db = _this2._schema.getBuilder();
-
-              if (_this2._schema.isUpdatable()) {
-                _context2.next = 6;
-                break;
-              }
-
-              throw new Error("Doesn't have primaryKeyValue");
-
-            case 6:
-              if (!transactionMode) {
-                _context2.next = 9;
-                break;
-              }
-
-              _context2.next = 9;
-              return _helper.transaction.begin();
-
-            case 9:
-              _context2.next = 11;
-              return _this2._schema.deleteCascade(_this2._data);
-
-            case 11:
-              _context2.next = 13;
-              return db.delete().execute();
-
-            case 13:
-              if (!transactionMode) {
-                _context2.next = 16;
-                break;
-              }
-
-              _context2.next = 16;
-              return _helper.transaction.commit();
-
-            case 16:
-              return _context2.abrupt('return', true);
-
-            case 19:
-              _context2.prev = 19;
-              _context2.t0 = _context2['catch'](2);
-
-              if (!transactionMode) {
-                _context2.next = 24;
-                break;
-              }
-
-              _context2.next = 24;
-              return _helper.transaction.rollback();
-
-            case 24:
-              return _context2.abrupt('return', (0, _helper.errors)(_context2.t0));
-
-            case 25:
-            case 'end':
-              return _context2.stop();
-          }
-        }
-      }, _callee2, _this2, [[2, 19]]);
-    }));
-
-    return function () {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-
-  this.toJSON = function () {
-    var dataJSON = {};
-
-    if (_this2._schema.primaryKeys.length) {
-      var _iteratorNormalCompletion5 = true;
-      var _didIteratorError5 = false;
-      var _iteratorError5 = undefined;
-
-      try {
-        for (var _iterator5 = _this2._schema.primaryKeys[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-          var primaryKey = _step5.value;
-
-          dataJSON[primaryKey] = _this2._schema.primaryKeysValue[primaryKey];
-        }
-      } catch (err) {
-        _didIteratorError5 = true;
-        _iteratorError5 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion5 && _iterator5.return) {
-            _iterator5.return();
-          }
-        } finally {
-          if (_didIteratorError5) {
-            throw _iteratorError5;
-          }
-        }
-      }
-    }
-
-    dataJSON = Object.assign(dataJSON, _this2.getData());
-
-    var _iteratorNormalCompletion6 = true;
-    var _didIteratorError6 = false;
-    var _iteratorError6 = undefined;
-
-    try {
-      for (var _iterator6 = _this2._schema.relations[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-        var relationData = _step6.value;
-        var _name2 = relationData.name;
-
-        var data = _this2._data[_name2];
-        var _type2 = (0, _helper.getTypeOfValue)(data);
-
-        if (_type2 === 'many' || _type2 === 'join') {
-          dataJSON[_name2] = [];
-          var _iteratorNormalCompletion7 = true;
-          var _didIteratorError7 = false;
-          var _iteratorError7 = undefined;
-
-          try {
-            for (var _iterator7 = data[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-              var item = _step7.value;
-
-              dataJSON[_name2].push(item.toJSON());
-            }
-          } catch (err) {
-            _didIteratorError7 = true;
-            _iteratorError7 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion7 && _iterator7.return) {
-                _iterator7.return();
-              }
-            } finally {
-              if (_didIteratorError7) {
-                throw _iteratorError7;
-              }
-            }
-          }
-        } else {
-          dataJSON[_name2] = data.toJSON();
-        }
-      }
-    } catch (err) {
-      _didIteratorError6 = true;
-      _iteratorError6 = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion6 && _iterator6.return) {
-          _iterator6.return();
-        }
-      } finally {
-        if (_didIteratorError6) {
-          throw _iteratorError6;
-        }
-      }
-    }
-
-    return dataJSON;
-  };
-};
 
 module.exports = Model;

@@ -9,9 +9,10 @@ class Many extends Array {
     })
   }
 
-  add(data = {}) {
+  async add(data = {}) {
     const RelationModel = this.model
-    let newRelationModel = new RelationModel(data)
+    let newRelationModel = new RelationModel()
+    await newRelationModel.setData(data)
     this.push(newRelationModel)
     return newRelationModel
   }
