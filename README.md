@@ -61,7 +61,8 @@ DATABASE_QUERY_LOG=true
 ## Model Methods
 
 ```js
-async save() // Save changes
+async save(transactionMode = true, allSave = false) // Save changes
+async setData(data) // set changes by Json data
 async saveByData(data) // Save changes by Json data
 async delete() // Delete entries
 async toJSON() // Return to JSON format
@@ -79,7 +80,7 @@ findAll(field, value) // get all rows by filter
 ## Model Relations Type "many" Methods
 
 ```js
-add(data = {}) // Model data
+await add(data = {}) // Model data
 fetch(field, value) // get rows by filter
 fetchOne(field, value) // get row by filter
 ```

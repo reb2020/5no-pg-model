@@ -76,7 +76,9 @@ class Model {
         const {name, type, model: RelationModel, join, foreign, local} = relationData
         const typeOfValue = getTypeOfValue(data[name])
 
-        if (type === 'many' && typeOfValue === 'array') {
+        if (typeof this._data[name] !== 'undefined' && type === 'one' && typeOfValue === 'object') {
+          await this._data[name].setData(data[name])
+        } else if (type === 'many' && typeOfValue === 'array') {
           this._data[name] = new Many(RelationModel)
           for (let item of data[name]) {
             await this._data[name].add(item)

@@ -296,7 +296,7 @@ const jsonUpdateTestData = {
     {
       'created_at': sinon.match(dateRegex),
       'id': sinon.match(uuidV4Regex),
-      'postcode': '100508',
+      'postcode': '100502',
       'street_name': 'Test1',
       'updated_at': sinon.match(dateRegex),
       'user_id': sinon.match(uuidV4Regex),
@@ -584,11 +584,34 @@ describe('Model', () => {
       cb.should.have.been.calledWith(jsonTestUpdateData)
     })
 
+    it('update setData', async() => {
+      let data = await Manager.build(Users).find(usersId)
+
+      const testDataJson = await data.toJSON()
+
+      testDataJson.Addresses[1].postcode = '100502'
+
+      await data.setData({
+        secret_key: 'test_333',
+        Info: {
+          last_name: 'Sokol2',
+        },
+        Addresses: testDataJson.Addresses,
+      })
+
+      await data.save(true, true)
+      const testData = await data.toJSON()
+
+      let cb = sinon.spy()
+      cb(testData)
+      cb.should.have.been.calledWith(jsonTestData)
+    })
+
     it('saveByData', async() => {
       const dataJson = await Manager.build(Users, true).find(usersId)
       let cb = sinon.spy()
       cb(dataJson)
-      cb.should.have.been.calledWith(jsonTestUpdateData)
+      cb.should.have.been.calledWith(jsonTestData)
 
       dataJson.Addresses[0].postcode = '100501'
       dataJson.Info.first_name = 'Aleks21'
@@ -600,9 +623,6 @@ describe('Model', () => {
       await newUserData.saveByData(dataJson)
 
       const data = await newUserData.toJSON()
-
-      // console.warn(dataJson)
-      // console.warn(newUserData)
 
       cb(data)
       cb.should.have.been.calledWith(jsonUpdateTestData)

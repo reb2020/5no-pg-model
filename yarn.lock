@@ -2,20 +2,20 @@
 # yarn lockfile v1
 
 
-"5no-pg-builder@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/5no-pg-builder/-/5no-pg-builder-1.0.7.tgz#0f3bb6b982df3e57913346181f2f88c75ee85b48"
-  integrity sha512-HovA7kAuZUAf4KBJxHAbiMCMvveeX8LpMScMx77TWJyJUxVRhkZJEzKY7wNho59B/1z2blw+4Czp6iy2bBDSsw==
+"5no-pg-builder@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/5no-pg-builder/-/5no-pg-builder-1.0.8.tgz#e0d99dd964d8e7fa302c66d21b341f07c8629d28"
+  integrity sha512-E8OLWQZkFxWbf2Pt37iGUJ6FQ2npY/KqtDFM/7YDbBWAbn2pMKLFyCvUhNUWpmQOEL7OdL92JrbwbGxmrCMO+Q==
   dependencies:
     dotenv "^6.1.0"
     pg "^7.5.0"
     pg-pool "^2.0.0"
     url "^0.11.0"
 
-"5no-schema@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/5no-schema/-/5no-schema-1.1.2.tgz#9366908f5701fbef0eb3da6314a15ebbf18289f0"
-  integrity sha512-yZ2c2o4DDHO/RMwY+NFfy/mbIAmlQfI+86nXMS6iCnNJknGzDd38GTq4uOMlXfih+Ww6CIg2FwbcF0HBDSan9Q==
+"5no-schema@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/5no-schema/-/5no-schema-1.1.3.tgz#f85d659bdb58f100e703a1b6138ed40c43abebdc"
+  integrity sha512-wDTKhBNLpJiWAj0obzwcUP4sCZpdiHjLC14gWgyNBD84lHoevLd0vBxZYbkek1G1x8b5RHtrykfzrAccQxZHog==
   dependencies:
     moment "^2.22.2"
 

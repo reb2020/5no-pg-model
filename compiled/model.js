@@ -72,7 +72,7 @@ var Model = function () {
 
               case 9:
                 if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                  _context.next = 82;
+                  _context.next = 87;
                   break;
                 }
 
@@ -80,8 +80,21 @@ var Model = function () {
                 name = relationData.name, type = relationData.type, RelationModel = relationData.model, join = relationData.join, foreign = relationData.foreign, local = relationData.local;
                 typeOfValue = (0, _helper.getTypeOfValue)(data[name]);
 
+                if (!(typeof _this._data[name] !== 'undefined' && type === 'one' && typeOfValue === 'object')) {
+                  _context.next = 18;
+                  break;
+                }
+
+                _context.next = 16;
+                return _this._data[name].setData(data[name]);
+
+              case 16:
+                _context.next = 84;
+                break;
+
+              case 18:
                 if (!(type === 'many' && typeOfValue === 'array')) {
-                  _context.next = 43;
+                  _context.next = 48;
                   break;
                 }
 
@@ -89,65 +102,65 @@ var Model = function () {
                 _iteratorNormalCompletion2 = true;
                 _didIteratorError2 = false;
                 _iteratorError2 = undefined;
-                _context.prev = 18;
+                _context.prev = 23;
                 _iterator2 = data[name][Symbol.iterator]();
 
-              case 20:
+              case 25:
                 if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
-                  _context.next = 27;
+                  _context.next = 32;
                   break;
                 }
 
                 item = _step2.value;
-                _context.next = 24;
+                _context.next = 29;
                 return _this._data[name].add(item);
 
-              case 24:
-                _iteratorNormalCompletion2 = true;
-                _context.next = 20;
-                break;
-
-              case 27:
-                _context.next = 33;
-                break;
-
               case 29:
-                _context.prev = 29;
-                _context.t0 = _context['catch'](18);
+                _iteratorNormalCompletion2 = true;
+                _context.next = 25;
+                break;
+
+              case 32:
+                _context.next = 38;
+                break;
+
+              case 34:
+                _context.prev = 34;
+                _context.t0 = _context['catch'](23);
                 _didIteratorError2 = true;
                 _iteratorError2 = _context.t0;
 
-              case 33:
-                _context.prev = 33;
-                _context.prev = 34;
+              case 38:
+                _context.prev = 38;
+                _context.prev = 39;
 
                 if (!_iteratorNormalCompletion2 && _iterator2.return) {
                   _iterator2.return();
                 }
 
-              case 36:
-                _context.prev = 36;
+              case 41:
+                _context.prev = 41;
 
                 if (!_didIteratorError2) {
-                  _context.next = 39;
+                  _context.next = 44;
                   break;
                 }
 
                 throw _iteratorError2;
 
-              case 39:
-                return _context.finish(36);
+              case 44:
+                return _context.finish(41);
 
-              case 40:
-                return _context.finish(33);
+              case 45:
+                return _context.finish(38);
 
-              case 41:
-                _context.next = 79;
+              case 46:
+                _context.next = 84;
                 break;
 
-              case 43:
+              case 48:
                 if (!(type === 'join' && typeOfValue === 'array')) {
-                  _context.next = 75;
+                  _context.next = 80;
                   break;
                 }
 
@@ -155,12 +168,12 @@ var Model = function () {
                 _iteratorNormalCompletion3 = true;
                 _didIteratorError3 = false;
                 _iteratorError3 = undefined;
-                _context.prev = 48;
+                _context.prev = 53;
                 _iterator3 = data[name][Symbol.iterator]();
 
-              case 50:
+              case 55:
                 if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
-                  _context.next = 59;
+                  _context.next = 64;
                   break;
                 }
 
@@ -168,107 +181,107 @@ var Model = function () {
                 joinData = Object.assign({}, _item);
 
                 joinData[foreign] = data[local];
-                _context.next = 56;
+                _context.next = 61;
                 return _this._data[name].add(joinData);
 
-              case 56:
-                _iteratorNormalCompletion3 = true;
-                _context.next = 50;
-                break;
-
-              case 59:
-                _context.next = 65;
-                break;
-
               case 61:
-                _context.prev = 61;
-                _context.t1 = _context['catch'](48);
+                _iteratorNormalCompletion3 = true;
+                _context.next = 55;
+                break;
+
+              case 64:
+                _context.next = 70;
+                break;
+
+              case 66:
+                _context.prev = 66;
+                _context.t1 = _context['catch'](53);
                 _didIteratorError3 = true;
                 _iteratorError3 = _context.t1;
 
-              case 65:
-                _context.prev = 65;
-                _context.prev = 66;
+              case 70:
+                _context.prev = 70;
+                _context.prev = 71;
 
                 if (!_iteratorNormalCompletion3 && _iterator3.return) {
                   _iterator3.return();
                 }
 
-              case 68:
-                _context.prev = 68;
+              case 73:
+                _context.prev = 73;
 
                 if (!_didIteratorError3) {
-                  _context.next = 71;
+                  _context.next = 76;
                   break;
                 }
 
                 throw _iteratorError3;
 
-              case 71:
-                return _context.finish(68);
+              case 76:
+                return _context.finish(73);
 
-              case 72:
-                return _context.finish(65);
+              case 77:
+                return _context.finish(70);
 
-              case 73:
-                _context.next = 79;
+              case 78:
+                _context.next = 84;
                 break;
 
-              case 75:
+              case 80:
                 if (!(type === 'one' && typeOfValue === 'object')) {
-                  _context.next = 79;
+                  _context.next = 84;
                   break;
                 }
 
                 _this._data[name] = new RelationModel();
-                _context.next = 79;
+                _context.next = 84;
                 return _this._data[name].setData(data[name]);
 
-              case 79:
+              case 84:
                 _iteratorNormalCompletion = true;
                 _context.next = 9;
                 break;
 
-              case 82:
-                _context.next = 88;
+              case 87:
+                _context.next = 93;
                 break;
 
-              case 84:
-                _context.prev = 84;
+              case 89:
+                _context.prev = 89;
                 _context.t2 = _context['catch'](7);
                 _didIteratorError = true;
                 _iteratorError = _context.t2;
 
-              case 88:
-                _context.prev = 88;
-                _context.prev = 89;
+              case 93:
+                _context.prev = 93;
+                _context.prev = 94;
 
                 if (!_iteratorNormalCompletion && _iterator.return) {
                   _iterator.return();
                 }
 
-              case 91:
-                _context.prev = 91;
+              case 96:
+                _context.prev = 96;
 
                 if (!_didIteratorError) {
-                  _context.next = 94;
+                  _context.next = 99;
                   break;
                 }
 
                 throw _iteratorError;
 
-              case 94:
-                return _context.finish(91);
+              case 99:
+                return _context.finish(96);
 
-              case 95:
-                return _context.finish(88);
+              case 100:
+                return _context.finish(93);
 
-              case 96:
+              case 101:
               case 'end':
                 return _context.stop();
             }
           }
-        }, _callee, _this, [[7, 84, 88, 96], [18, 29, 33, 41], [34,, 36, 40], [48, 61, 65, 73], [66,, 68, 72], [89,, 91, 95]]);
+        }, _callee, _this, [[7, 89, 93, 101], [23, 34, 38, 46], [39,, 41, 45], [53, 66, 70, 78], [71,, 73, 77], [94,, 96, 100]]);
       }));
 
       return function (_x) {
