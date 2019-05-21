@@ -192,7 +192,7 @@ class Model {
           for (let item of data) {
             dataJSON[name].push(await item.toJSON())
           }
-        } else {
+        } else if (typeof data !== 'undefined') {
           dataJSON[name] = await data.toJSON()
         }
       }

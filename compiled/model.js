@@ -616,7 +616,7 @@ var Model = function () {
 
             case 30:
               if (_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done) {
-                _context6.next = 74;
+                _context6.next = 75;
                 break;
               }
 
@@ -693,64 +693,69 @@ var Model = function () {
               return _context6.finish(58);
 
             case 66:
-              _context6.next = 71;
+              _context6.next = 72;
               break;
 
             case 68:
-              _context6.next = 70;
+              if (!(typeof data !== 'undefined')) {
+                _context6.next = 72;
+                break;
+              }
+
+              _context6.next = 71;
               return data.toJSON();
 
-            case 70:
+            case 71:
               dataJSON[name] = _context6.sent;
 
-            case 71:
+            case 72:
               _iteratorNormalCompletion5 = true;
               _context6.next = 30;
               break;
 
-            case 74:
-              _context6.next = 80;
+            case 75:
+              _context6.next = 81;
               break;
 
-            case 76:
-              _context6.prev = 76;
+            case 77:
+              _context6.prev = 77;
               _context6.t4 = _context6['catch'](28);
               _didIteratorError5 = true;
               _iteratorError5 = _context6.t4;
 
-            case 80:
-              _context6.prev = 80;
+            case 81:
               _context6.prev = 81;
+              _context6.prev = 82;
 
               if (!_iteratorNormalCompletion5 && _iterator5.return) {
                 _iterator5.return();
               }
 
-            case 83:
-              _context6.prev = 83;
+            case 84:
+              _context6.prev = 84;
 
               if (!_didIteratorError5) {
-                _context6.next = 86;
+                _context6.next = 87;
                 break;
               }
 
               throw _iteratorError5;
 
-            case 86:
-              return _context6.finish(83);
-
             case 87:
-              return _context6.finish(80);
+              return _context6.finish(84);
 
             case 88:
-              return _context6.abrupt('return', dataJSON);
+              return _context6.finish(81);
 
             case 89:
+              return _context6.abrupt('return', dataJSON);
+
+            case 90:
             case 'end':
               return _context6.stop();
           }
         }
-      }, _callee6, _this, [[5, 9, 13, 21], [14,, 16, 20], [28, 76, 80, 88], [40, 54, 58, 66], [59,, 61, 65], [81,, 83, 87]]);
+      }, _callee6, _this, [[5, 9, 13, 21], [14,, 16, 20], [28, 77, 81, 89], [40, 54, 58, 66], [59,, 61, 65], [82,, 84, 88]]);
     }));
 
     if (!this.constructor.schema) {

@@ -72,9 +72,10 @@ async toJSON() // Return to JSON format
 ## Manager.build(model, json = false) 
 
 ```js
-find(value) // get one row by primary key
+find(...values) // get one row by primary keys
 findOne(field, value) // get one row by filter
-findAll(field, value) // get all rows by filter
+findAll(field, value, order = null, limit = null) // get all rows by filter
+count(field, value) // get count rows
 ```
 
 ## Model Relations Type "many" Methods

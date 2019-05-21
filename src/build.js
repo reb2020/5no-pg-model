@@ -1,8 +1,9 @@
-import {getBuilder} from './helper'
+import { getBuilder, getTypeOfValue } from './helper'
 
 const TYPE_ONE = 'one'
 const TYPE_MANY = 'many'
 const TYPE_JOIN = 'join'
+const TYPE_COUNT = 'count'
 
 class Build {
     _schema = null
@@ -39,13 +40,15 @@ class Build {
       }
     }
 
-    _initDb = (fields, values, type = TYPE_MANY) => {
+    _initDb = (fields, values, type = TYPE_MANY, order = null, limit = null) => {
       const db = getBuilder(this._schema)
 
       if (this._join) {
         db.select()
         this._join.builder.select(['*'])
         db.innerJoin(this._join.builder, this._join.local, this._join.foreign)
+      } else if (type === TYPE_COUNT) {
+        db.count('*')
       } else {
         db.select(['*'])
       }
@@ -60,18 +63,54 @@ class Build {
         index++
       }
 
+      if (type === TYPE_COUNT) {
+        return db
+      }
+
       if (type === TYPE_ONE) {
         db.limit(1)
+      }
+
+      if (order !== null && getTypeOfValue(order) === 'string') {
+        const partsOfOrder = order.split(' ')
+        if (partsOfOrder.length === 1) {
+          db.order(order)
+        } else if (partsOfOrder.length === 2) {
+          db.order(partsOfOrder[0], partsOfOrder[1])
+        }
+      } else if (order !== null && getTypeOfValue(order) === 'array') {
+        for (let orderData of order) {
+          const partsOfOrder = orderData.split(' ')
+          if (partsOfOrder.length === 1) {
+            db.order(partsOfOrder[0])
+          } else if (partsOfOrder.length === 2) {
+            db.order(partsOfOrder[0], partsOfOrder[1])
+          }
+        }
+      }
+
+      if (limit !== null && getTypeOfValue(limit) === 'number') {
+        db.limit(limit)
+      } else if (limit !== null && getTypeOfValue(limit) === 'array' && limit.length === 2) {
+        db.limit(limit[0], limit[1])
       }
 
       return db
     }
 
-    _execute = async(fields, values, type = TYPE_MANY) => {
+    _execute = async(fields, values, type = TYPE_MANY, order = null, limit = null) => {
       const Model = this._model
-      const db = this._initDb(fields, values, type)
+      const db = this._initDb(fields, values, type, order, limit)
 
       const result = await db.execute()
+
+      if (type === TYPE_COUNT) {
+        if (result.rows.length === 1) {
+          return Number(result.rows.pop().count_rows)
+        }
+
+        return 0
+      }
 
       let returnData = []
 
@@ -105,8 +144,12 @@ class Build {
       return this._execute([field], [value], TYPE_ONE)
     }
 
-    findAll = async(field, value) => {
-      return this._execute([field], [value], TYPE_MANY)
+    findAll = async(field, value, order = null, limit = null) => {
+      return this._execute([field], [value], TYPE_MANY, order, limit)
+    }
+
+    count = async(field, value) => {
+      return this._execute([field], [value], TYPE_COUNT)
     }
 }
 

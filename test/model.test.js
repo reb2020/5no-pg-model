@@ -283,6 +283,11 @@ const jsonTestData = {
   },
 }
 
+const jsonUserRolesTestData = {
+  'user_id': sinon.match(uuidV4Regex),
+  'role_id': sinon.match(uuidV4Regex),
+}
+
 const jsonUpdateTestData = {
   'Addresses': [
     {
@@ -551,6 +556,30 @@ describe('Model', () => {
       expect(error).to.eql({
         error: 'duplicate key value violates unique constraint "users_email_index"',
       })
+    })
+
+    it('get data with the few primary keys', async() => {
+      const dataJson = await Manager.build(UserRoles, true).find(usersId, adminRole.id)
+      let cb = sinon.spy()
+      cb(dataJson)
+      cb.should.have.been.calledWith(jsonUserRolesTestData)
+    })
+
+    it('count', async() => {
+      const dataJson = await Manager.build(Users).count('email', 'test2010@test.me')
+      expect(dataJson).to.eql(1)
+    })
+
+    it('count not found', async() => {
+      const dataJson = await Manager.build(Users).count('email', 'test2010@test.me1')
+      expect(dataJson).to.eql(0)
+    })
+
+    it('get all', async() => {
+      const dataJson = await Manager.build(Users, true).findAll('email', 'test@test.me', 'created_at DESC', 1)
+      let cb = sinon.spy()
+      cb(dataJson[0])
+      cb.should.have.been.calledWith(jsonTestData)
     })
 
     it('get', async() => {
