@@ -141,14 +141,26 @@ class Build {
     }
 
     findOne = async(field, value) => {
+      if (getTypeOfValue(field) === 'array') {
+        return this._execute(field, value, TYPE_ONE)
+      }
+
       return this._execute([field], [value], TYPE_ONE)
     }
 
     findAll = async(field, value, order = null, limit = null) => {
+      if (getTypeOfValue(field) === 'array') {
+        return this._execute(field, value, TYPE_MANY, order, limit)
+      }
+
       return this._execute([field], [value], TYPE_MANY, order, limit)
     }
 
     count = async(field, value) => {
+      if (getTypeOfValue(field) === 'array') {
+        return this._execute(field, value, TYPE_COUNT)
+      }
+
       return this._execute([field], [value], TYPE_COUNT)
     }
 }

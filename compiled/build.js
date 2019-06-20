@@ -434,9 +434,17 @@ var _initialiseProps = function _initialiseProps() {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
+              if (!((0, _helper.getTypeOfValue)(field) === 'array')) {
+                _context4.next = 2;
+                break;
+              }
+
+              return _context4.abrupt('return', _this._execute(field, value, TYPE_ONE));
+
+            case 2:
               return _context4.abrupt('return', _this._execute([field], [value], TYPE_ONE));
 
-            case 1:
+            case 3:
             case 'end':
               return _context4.stop();
           }
@@ -457,9 +465,17 @@ var _initialiseProps = function _initialiseProps() {
         while (1) {
           switch (_context5.prev = _context5.next) {
             case 0:
+              if (!((0, _helper.getTypeOfValue)(field) === 'array')) {
+                _context5.next = 2;
+                break;
+              }
+
+              return _context5.abrupt('return', _this._execute(field, value, TYPE_MANY, order, limit));
+
+            case 2:
               return _context5.abrupt('return', _this._execute([field], [value], TYPE_MANY, order, limit));
 
-            case 1:
+            case 3:
             case 'end':
               return _context5.stop();
           }
@@ -478,9 +494,17 @@ var _initialiseProps = function _initialiseProps() {
         while (1) {
           switch (_context6.prev = _context6.next) {
             case 0:
+              if (!((0, _helper.getTypeOfValue)(field) === 'array')) {
+                _context6.next = 2;
+                break;
+              }
+
+              return _context6.abrupt('return', _this._execute(field, value, TYPE_COUNT));
+
+            case 2:
               return _context6.abrupt('return', _this._execute([field], [value], TYPE_COUNT));
 
-            case 1:
+            case 3:
             case 'end':
               return _context6.stop();
           }

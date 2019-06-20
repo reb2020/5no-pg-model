@@ -178,7 +178,10 @@ class Users extends Model {
         },
         personalised: {
           type: Object,
-          defaultValue: null,
+          prefilled: true,
+          defaultValue: {
+            test: 100,
+          },
         },
         created_at: {
           type: Date,
@@ -447,9 +450,6 @@ describe('Model', () => {
       testNewUser.email = 'test@test'
       testNewUser.public_key = 'test_123'
       testNewUser.secret_key = 'test_333'
-      testNewUser.personalised = {
-        test: 100,
-      }
       await testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
@@ -474,9 +474,6 @@ describe('Model', () => {
       testNewUser.email = 'test@test.me'
       testNewUser.public_key = 'test_123'
       testNewUser.secret_key = 'test_333'
-      testNewUser.personalised = {
-        test: 100,
-      }
       await testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
@@ -504,9 +501,6 @@ describe('Model', () => {
       testNewUser.email = 'test200@test.me'
       testNewUser.public_key = 'test_123'
       testNewUser.secret_key = 'test_333'
-      testNewUser.personalised = {
-        test: 100,
-      }
 
       const returnData = await testNewUser.save()
 
@@ -520,9 +514,6 @@ describe('Model', () => {
         email: 'test2010@test.me',
         public_key: 'test_123',
         secret_key: 'test_333',
-        personalised: {
-          test: 100,
-        },
         Addresses: [{
           street_name: 'Test 100',
           postcode: '100501',
@@ -577,6 +568,13 @@ describe('Model', () => {
 
     it('get all', async() => {
       const dataJson = await Manager.build(Users, true).findAll('email', 'test@test.me', 'created_at DESC', 1)
+      let cb = sinon.spy()
+      cb(dataJson[0])
+      cb.should.have.been.calledWith(jsonTestData)
+    })
+
+    it('get all by couple fields', async() => {
+      const dataJson = await Manager.build(Users, true).findAll(['email', 'public_key'], ['test@test.me', 'test_123'], 'created_at DESC', 1)
       let cb = sinon.spy()
       cb(dataJson[0])
       cb.should.have.been.calledWith(jsonTestData)

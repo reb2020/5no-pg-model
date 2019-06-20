@@ -30,6 +30,7 @@ DATABASE_QUERY_LOG=true
           primaryKey: true, // only for primaryKey
           defaultValue: null, // default value
           required: true, // validate values
+          prefilled: true, // filling field by default
         },
         [name]: { // Auto filling column name
           type: Date,
@@ -73,9 +74,9 @@ async toJSON() // Return to JSON format
 
 ```js
 find(...values) // get one row by primary keys
-findOne(field, value) // get one row by filter
-findAll(field, value, order = null, limit = null) // get all rows by filter
-count(field, value) // get count rows
+findOne(field | [...fields], value | [...values]) // get one row by filter
+findAll(field | [...fields], value | [...values], order = null, limit = null) // get all rows by filter
+count(field | [...fields], value | [...values]) // get count rows
 ```
 
 ## Model Relations Type "many" Methods
@@ -252,7 +253,10 @@ class Users extends Model {
         },
         personalised: {
           type: Object,
-          defaultValue: null,
+          prefilled: true,
+          defaultValue: {
+            test: 100,
+          },
         },
         created_at: {
           type: Date,
@@ -318,10 +322,7 @@ const testNewUser = new Users()
 testNewUser.email = 'test@test.me'
 testNewUser.public_key = 'test_123'
 testNewUser.secret_key = 'test_333'
-testNewUser.personalised = {
-  test: 100
-}
-      
+   
 await testNewUser.Addresses.add({
   street_name: 'Test',
   postcode: '100500',
