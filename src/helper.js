@@ -44,7 +44,7 @@ const modelSchemaFormater = (columns) => {
   let createdField = null
   let updatedField = null
   Object.keys(columns).forEach((field) => {
-    const { type, defaultValue, required, prefilled, filters, validators, primaryKey, format, created, updated } = columns[field]
+    const { type, defaultValue, required, prefilled, schema, filters, validators, primaryKey, format, created, updated } = columns[field]
 
     if (primaryKey) {
       primaryKeyFields.push(field)
@@ -61,6 +61,7 @@ const modelSchemaFormater = (columns) => {
     returnFormat[field] = {
       type: type,
       defaultValue: defaultValue,
+      schema: schema,
       format: format,
       prefilled: prefilled || false,
       required: required || false,

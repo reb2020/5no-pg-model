@@ -57,6 +57,7 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
         defaultValue = _columns$field.defaultValue,
         required = _columns$field.required,
         prefilled = _columns$field.prefilled,
+        schema = _columns$field.schema,
         filters = _columns$field.filters,
         validators = _columns$field.validators,
         primaryKey = _columns$field.primaryKey,
@@ -80,6 +81,7 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
     returnFormat[field] = {
       type: type,
       defaultValue: defaultValue,
+      schema: schema,
       format: format,
       prefilled: prefilled || false,
       required: required || false,
