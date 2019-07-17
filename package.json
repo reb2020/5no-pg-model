@@ -32,8 +32,8 @@
     "url": "git+https://github.com/reb2020/5no-pg-model.git"
   },
   "dependencies": {
-    "5no-pg-builder": "^1.0.8",
-    "5no-schema": "^1.1.6"
+    "5no-pg-builder": "^1.0.9",
+    "5no-schema": "^1.1.7"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
