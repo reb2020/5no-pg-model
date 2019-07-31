@@ -31,6 +31,7 @@ DATABASE_QUERY_LOG=true
           defaultValue: null, // default value
           required: true, // validate values
           prefilled: true, // filling field by default
+          schema: {}, // Can describe object schema
         },
         [name]: { // Auto filling column name
           type: Date,
@@ -258,6 +259,23 @@ class Users extends Model {
             test: 100,
           },
         },
+        properties: {
+          type: Array,
+          defaultValue: [],
+          schema: {
+            name: {
+              type: String,
+              required: true,
+              filters: [
+                'lowerCase',
+              ],
+            },
+            value: {
+              type: String,
+              required: true,
+            },
+          },
+        },
         created_at: {
           type: Date,
           created: true,
@@ -323,6 +341,13 @@ testNewUser.email = 'test@test.me'
 testNewUser.public_key = 'test_123'
 testNewUser.secret_key = 'test_333'
    
+testNewUser.properties = [
+        {
+          name: 'Test',
+          value: 'OK',
+        },
+      ]  
+
 await testNewUser.Addresses.add({
   street_name: 'Test',
   postcode: '100500',
@@ -368,6 +393,12 @@ return
   personalised: {
     test: 100
   },
+  properties: [
+    {
+      name: 'test',
+      value: 'OK',
+    },
+  ],
   Info: 
    { id: '0320dc4f-4ca7-4b65-bd42-52f286a0b9db',
      user_id: '7852468e-ac99-4f5e-9ee3-d506b0c4424e',

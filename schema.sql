@@ -136,6 +136,7 @@ CREATE TABLE "public"."users" (
 	"public_key" text NOT NULL COLLATE "default",
 	"secret_key" text NOT NULL COLLATE "default",
 	"personalised" jsonb DEFAULT '{}'::jsonb,
+	"properties" jsonb DEFAULT '[]'::jsonb,
 	"created_at" timestamp(6) WITH TIME ZONE NOT NULL DEFAULT now(),
 	"updated_at" timestamp(6) WITH TIME ZONE NOT NULL DEFAULT now()
 )

@@ -183,6 +183,23 @@ class Users extends Model {
             test: 100,
           },
         },
+        properties: {
+          type: Array,
+          defaultValue: [],
+          schema: {
+            name: {
+              type: String,
+              required: true,
+              filters: [
+                'lowerCase',
+              ],
+            },
+            value: {
+              type: String,
+              required: true,
+            },
+          },
+        },
         created_at: {
           type: Date,
           created: true,
@@ -284,6 +301,12 @@ const jsonTestData = {
   'personalised': {
     test: 100,
   },
+  'properties': [
+    {
+      name: 'test',
+      value: 'OK',
+    },
+  ],
 }
 
 const jsonUserRolesTestData = {
@@ -341,6 +364,16 @@ const jsonUpdateTestData = {
   'personalised': {
     test: 100,
   },
+  'properties': [
+    {
+      name: 'test',
+      value: 'OK',
+    },
+    {
+      name: 'test2',
+      value: 'OK2',
+    },
+  ],
 }
 
 const jsonTestUpdateData = {
@@ -393,6 +426,16 @@ const jsonTestUpdateData = {
   'personalised': {
     test: 100,
   },
+  'properties': [
+    {
+      name: 'test',
+      value: 'OK',
+    },
+    {
+      name: 'test2',
+      value: 'OK2',
+    },
+  ],
 }
 
 const jsonNullTestData = {
@@ -474,6 +517,12 @@ describe('Model', () => {
       testNewUser.email = 'test@test.me'
       testNewUser.public_key = 'test_123'
       testNewUser.secret_key = 'test_333'
+      testNewUser.properties = [
+        {
+          name: 'Test',
+          value: 'OK',
+        },
+      ]
       await testNewUser.Addresses.add({
         street_name: 'Test',
         postcode: '100500',
@@ -602,6 +651,16 @@ describe('Model', () => {
 
       data.Info.last_name = 'Sokol200'
       data.secret_key = 'test_33309'
+      data.properties = [
+        {
+          name: 'Test',
+          value: 'OK',
+        },
+        {
+          name: 'Test2',
+          value: 'OK2',
+        },
+      ]
 
       await data.save()
       const testData = await data.toJSON()
@@ -624,6 +683,12 @@ describe('Model', () => {
           last_name: 'Sokol2',
         },
         Addresses: testDataJson.Addresses,
+        properties: [
+          {
+            name: 'Test',
+            value: 'OK',
+          },
+        ],
       })
 
       await data.save(true, true)
@@ -645,6 +710,16 @@ describe('Model', () => {
       dataJson.Info.last_name = 'Sokol21'
       dataJson.public_key = 'test_1231'
       dataJson.secret_key = 'test_3331'
+      dataJson.properties = [
+        {
+          name: 'Test',
+          value: 'OK',
+        },
+        {
+          name: 'Test2',
+          value: 'OK2',
+        },
+      ]
 
       const newUserData = new Users()
       await newUserData.saveByData(dataJson)
