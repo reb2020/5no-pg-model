@@ -11,8 +11,7 @@ npm install --save 5no-pg-model
 ## .env
 
 ```js
-DATABASE_URL=postgres://test:123123@127.0.0.1:5432/testDB
-DATABASE_SSL=false
+DATABASE_URL=postgres://test:123123@127.0.0.1:5432/testDB?ssl=false
 DATABASE_QUERY_LOG=true
 ```
 
