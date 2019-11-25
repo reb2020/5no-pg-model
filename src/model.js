@@ -34,7 +34,7 @@ class Model {
             if (this._schema.primaryKeys.includes(column)) {
               return this._schema.primaryKeysValue[column]
             }
-            return this._data[column] || null
+            return this._data[column]
           },
         })
       })

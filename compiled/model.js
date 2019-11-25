@@ -780,7 +780,7 @@ var Model = function () {
           if (_this._schema.primaryKeys.includes(column)) {
             return _this._schema.primaryKeysValue[column];
           }
-          return _this._data[column] || null;
+          return _this._data[column];
         }
       });
     });
