@@ -77,9 +77,9 @@ class ModelSchema {
         if (type === 'many' || type === 'join') {
           for (let item of data[name]) {
             if (type === 'join') {
-              if (item._join[foreign] !== localValue) {
-                item._join[foreign] = localValue
-                item._join._schema.type = 'new'
+              if (item._joinModel[foreign] !== localValue) {
+                item._joinModel[foreign] = localValue
+                item._joinModel._schema.type = 'new'
               }
             } else {
               if (item[foreign] !== localValue) {
@@ -97,8 +97,13 @@ class ModelSchema {
             }
           }
         } else {
-          if (data[name][foreign] !== localValue) {
-            data[name][foreign] = localValue
+          if (data[name]._joinModel && data[name]._joinModel[foreign] !== localValue) {
+            data[name]._joinModel[foreign] = localValue
+            data[name]._joinModel._schema.type = 'new'
+          } else {
+            if (data[name][foreign] !== localValue) {
+              data[name][foreign] = localValue
+            }
           }
           let result = null
           if (method === 'save') {

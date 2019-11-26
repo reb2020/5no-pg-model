@@ -100,6 +100,41 @@ const errors = (errors) => {
   return { error: typeof errors.message !== 'undefined' ? errors.message : errors }
 }
 
+const initJoin = (RelationModel, join) => {
+  const JoinModel = join.model
+
+  const InitModelJoin = new JoinModel()
+  InitModelJoin._joinSchema = join
+  InitModelJoin._joinModel = new RelationModel()
+
+  return InitModelJoin
+}
+
+const joinData = (data) => {
+  let setData = {}
+
+  if (typeof data === 'object' && data.constructor.name.toLowerCase() === 'object') {
+    setData = Object.assign({}, data)
+  } else {
+    setData = data.toJSON()
+  }
+
+  return setData
+}
+
+const join = async(RelationModel, join, data) => {
+  const InitModelJoin = initJoin(RelationModel, join)
+
+  let dataJoin = Object.assign({}, data)
+  dataJoin[join.local] = data[join.foreign]
+
+  await InitModelJoin._joinModel.setData(dataJoin)
+
+  await InitModelJoin.setData(joinData(data))
+
+  return InitModelJoin
+}
+
 module.exports = {
   errors,
   getBuilder,
@@ -108,4 +143,7 @@ module.exports = {
   modelSchemaFormater,
   modelSchemaRelationsFormater,
   transaction,
+  initJoin,
+  join,
+  joinData,
 }

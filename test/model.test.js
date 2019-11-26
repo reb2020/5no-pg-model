@@ -68,6 +68,28 @@ class UserRoles extends Model {
   }
 }
 
+class UserRole extends Model {
+  static schema = {
+    table: {
+      schema: 'public',
+      name: 'user_role',
+    },
+    columns: {
+      user_id: {
+        type: String,
+        defaultValue: null,
+        primaryKey: true,
+      },
+      role_id: {
+        type: String,
+        defaultValue: null,
+        primaryKey: true,
+      },
+    },
+    relations: {},
+  }
+}
+
 class UsersAddresses extends Model {
     static schema = {
       table: {
@@ -238,6 +260,23 @@ class Users extends Model {
             model: Roles,
             local: 'role_id',
             foreign: 'id',
+            type: 'many',
+          },
+          local: 'id',
+          foreign: 'user_id',
+          type: 'join',
+          cascade: [
+            'save',
+            'delete',
+          ],
+        },
+        Role: {
+          model: UserRole,
+          join: {
+            model: Roles,
+            local: 'role_id',
+            foreign: 'id',
+            type: 'one',
           },
           local: 'id',
           foreign: 'user_id',
@@ -291,6 +330,12 @@ const jsonTestData = {
     'last_name': 'Sokol2',
     'updated_at': sinon.match(dateRegex),
     'user_id': sinon.match(uuidV4Regex),
+  },
+  'Role': {
+    'created_at': sinon.match(dateRegex),
+    'id': sinon.match(uuidV4Regex),
+    'role': 'Admin',
+    'updated_at': sinon.match(dateRegex),
   },
   'created_at': sinon.match(dateRegex),
   'email': 'test@test.me',
@@ -355,6 +400,12 @@ const jsonUpdateTestData = {
     'updated_at': sinon.match(dateRegex),
     'user_id': sinon.match(uuidV4Regex),
   },
+  'Role': {
+    'created_at': sinon.match(dateRegex),
+    'id': sinon.match(uuidV4Regex),
+    'role': 'Admin',
+    'updated_at': sinon.match(dateRegex),
+  },
   'created_at': sinon.match(dateRegex),
   'email': 'test@test.me',
   'id': sinon.match(uuidV4Regex),
@@ -416,6 +467,12 @@ const jsonTestUpdateData = {
     'last_name': 'Sokol200',
     'updated_at': sinon.match(dateRegex),
     'user_id': sinon.match(uuidV4Regex),
+  },
+  'Role': {
+    'created_at': sinon.match(dateRegex),
+    'id': sinon.match(uuidV4Regex),
+    'role': 'Admin',
+    'updated_at': sinon.match(dateRegex),
   },
   'created_at': sinon.match(dateRegex),
   'email': 'test@test.me',
@@ -536,6 +593,7 @@ describe('Model', () => {
 
       await testNewUser.Roles.add(adminRole)
       await testNewUser.Roles.add(customerRole)
+      await testNewUser.Role.join(adminRole)
 
       const returnData = await testNewUser.save()
 
@@ -736,6 +794,12 @@ describe('Model', () => {
       let dataDel = data.Roles.fetchOne('role', 'Admin')
 
       expect(await dataDel.delete()).to.eql(true)
+    })
+
+    it('delete related item', async() => {
+      let data = await Manager.build(Users).find(usersId)
+
+      expect(await data.Role.delete()).to.eql(true)
     })
 
     it('delete', async() => {

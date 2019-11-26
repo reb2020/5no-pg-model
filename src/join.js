@@ -1,3 +1,5 @@
+import { join as ModelJoin } from './helper'
+
 class Join extends Array {
   constructor(model, join) {
     super()
@@ -15,24 +17,7 @@ class Join extends Array {
   }
 
   async add(data = {}) {
-    const RelationModel = this.join.model
-    const ModelJoin = this.model
-
-    let dataJoin = Object.assign({}, data)
-    dataJoin[this.join.local] = data[this.join.foreign]
-
-    const InitModelJoin = new ModelJoin()
-    await InitModelJoin.setData(dataJoin)
-
-    if (typeof data === 'object' && data.constructor.name.toLowerCase() === 'object') {
-      const InitRelationModel = new RelationModel()
-      await InitRelationModel.setData(data)
-      InitRelationModel._join = InitModelJoin
-      this.push(InitRelationModel)
-    } else {
-      data._join = InitModelJoin
-      this.push(data)
-    }
+    this.push(await ModelJoin(this.model, this.join, data))
   }
 
   fetch(field, value) {

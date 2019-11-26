@@ -43,7 +43,7 @@ var _initialiseProps = function _initialiseProps() {
 
   this._relations = function () {
     var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(item) {
-      var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, relationData, name, type, model, foreign, local, join, data;
+      var _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, relationData, name, type, model, foreign, local, join, data, getType;
 
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
@@ -57,7 +57,7 @@ var _initialiseProps = function _initialiseProps() {
 
             case 5:
               if (_iteratorNormalCompletion = (_step = _iterator.next()).done) {
-                _context.next = 23;
+                _context.next = 24;
                 break;
               }
 
@@ -67,79 +67,85 @@ var _initialiseProps = function _initialiseProps() {
 
               data._isRelations = true;
 
+              getType = type;
+
+
               if (type === TYPE_JOIN) {
                 data._join = {
                   builder: (0, _helper.getBuilder)(join.model.getSchema()),
                   local: join.local,
-                  foreign: join.foreign
+                  foreign: join.foreign,
+                  type: join.type
                 };
+
+                getType = join.type;
               }
 
-              if (!(type === TYPE_ONE)) {
-                _context.next = 17;
+              if (!(getType === TYPE_ONE)) {
+                _context.next = 18;
                 break;
               }
 
-              _context.next = 14;
+              _context.next = 15;
               return data.findOne(foreign, item[local]);
 
-            case 14:
+            case 15:
               item[name] = _context.sent;
-              _context.next = 20;
+              _context.next = 21;
               break;
 
-            case 17:
-              _context.next = 19;
+            case 18:
+              _context.next = 20;
               return data.findAll(foreign, item[local]);
 
-            case 19:
+            case 20:
               item[name] = _context.sent;
 
-            case 20:
+            case 21:
               _iteratorNormalCompletion = true;
               _context.next = 5;
               break;
 
-            case 23:
-              _context.next = 29;
+            case 24:
+              _context.next = 30;
               break;
 
-            case 25:
-              _context.prev = 25;
+            case 26:
+              _context.prev = 26;
               _context.t0 = _context['catch'](3);
               _didIteratorError = true;
               _iteratorError = _context.t0;
 
-            case 29:
-              _context.prev = 29;
+            case 30:
               _context.prev = 30;
+              _context.prev = 31;
 
               if (!_iteratorNormalCompletion && _iterator.return) {
                 _iterator.return();
               }
 
-            case 32:
-              _context.prev = 32;
+            case 33:
+              _context.prev = 33;
 
               if (!_didIteratorError) {
-                _context.next = 35;
+                _context.next = 36;
                 break;
               }
 
               throw _iteratorError;
 
-            case 35:
-              return _context.finish(32);
-
             case 36:
-              return _context.finish(29);
+              return _context.finish(33);
 
             case 37:
+              return _context.finish(30);
+
+            case 38:
             case 'end':
               return _context.stop();
           }
         }
-      }, _callee, _this, [[3, 25, 29, 37], [30,, 32, 36]]);
+      }, _callee, _this, [[3, 26, 30, 38], [31,, 33, 37]]);
     }));
 
     return function (_x2) {

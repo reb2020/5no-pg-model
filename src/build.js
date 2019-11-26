@@ -24,15 +24,20 @@ class Build {
         const data = new Build(model)
         data._isRelations = true
 
+        let getType = type
+
         if (type === TYPE_JOIN) {
           data._join = {
             builder: getBuilder(join.model.getSchema()),
             local: join.local,
             foreign: join.foreign,
+            type: join.type,
           }
+
+          getType = join.type
         }
 
-        if (type === TYPE_ONE) {
+        if (getType === TYPE_ONE) {
           item[name] = await data.findOne(foreign, item[local])
         } else {
           item[name] = await data.findAll(foreign, item[local])

@@ -174,9 +174,9 @@ var _initialiseProps = function _initialiseProps() {
               item = _step3.value;
 
               if (type === 'join') {
-                if (item._join[foreign] !== localValue) {
-                  item._join[foreign] = localValue;
-                  item._join._schema.type = 'new';
+                if (item._joinModel[foreign] !== localValue) {
+                  item._joinModel[foreign] = localValue;
+                  item._joinModel._schema.type = 'new';
                 }
               } else {
                 if (item[foreign] !== localValue) {
@@ -262,8 +262,13 @@ var _initialiseProps = function _initialiseProps() {
               break;
 
             case 55:
-              if (data[name][foreign] !== localValue) {
-                data[name][foreign] = localValue;
+              if (data[name]._joinModel && data[name]._joinModel[foreign] !== localValue) {
+                data[name]._joinModel[foreign] = localValue;
+                data[name]._joinModel._schema.type = 'new';
+              } else {
+                if (data[name][foreign] !== localValue) {
+                  data[name][foreign] = localValue;
+                }
               }
               _result = null;
 

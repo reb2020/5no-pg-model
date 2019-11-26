@@ -4,10 +4,6 @@ var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -27,6 +23,8 @@ var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorRet
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _helper = require('./helper');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57,42 +55,20 @@ var Join = function (_Array) {
     value: function () {
       var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
         var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var RelationModel, ModelJoin, dataJoin, InitModelJoin, InitRelationModel;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                RelationModel = this.join.model;
-                ModelJoin = this.model;
-                dataJoin = Object.assign({}, data);
+                _context.t0 = this;
+                _context.next = 3;
+                return (0, _helper.join)(this.model, this.join, data);
 
-                dataJoin[this.join.local] = data[this.join.foreign];
+              case 3:
+                _context.t1 = _context.sent;
 
-                InitModelJoin = new ModelJoin();
-                _context.next = 7;
-                return InitModelJoin.setData(dataJoin);
+                _context.t0.push.call(_context.t0, _context.t1);
 
-              case 7:
-                if (!((typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)) === 'object' && data.constructor.name.toLowerCase() === 'object')) {
-                  _context.next = 15;
-                  break;
-                }
-
-                InitRelationModel = new RelationModel();
-                _context.next = 11;
-                return InitRelationModel.setData(data);
-
-              case 11:
-                InitRelationModel._join = InitModelJoin;
-                this.push(InitRelationModel);
-                _context.next = 17;
-                break;
-
-              case 15:
-                data._join = InitModelJoin;
-                this.push(data);
-
-              case 17:
+              case 5:
               case 'end':
                 return _context.stop();
             }

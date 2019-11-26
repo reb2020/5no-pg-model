@@ -194,3 +194,10 @@ CREATE TABLE "public"."user_roles" (
 	"role_id" uuid NOT NULL
 )
 WITH (OIDS=FALSE);
+
+DROP TABLE IF EXISTS "public"."user_role";
+CREATE TABLE "public"."user_role" (
+	"user_id" uuid NOT NULL,
+	"role_id" uuid NOT NULL
+)
+WITH (OIDS=FALSE);

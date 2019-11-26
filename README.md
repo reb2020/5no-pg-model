@@ -46,7 +46,12 @@ DATABASE_QUERY_LOG=true
       relations: {
         Info: { // name 
           model: UsersInfo, // model 
-          join: {}, // join model
+          join: {
+            model: Roles, // Join model
+            local: 'role_id', // local column
+            foreign: 'id', // external table field
+            type: 'one', // one, many
+          }, // join model
           local: 'id', // local column
           foreign: 'user_id', // external table field
           type: 'one', // one, many, join
@@ -124,6 +129,37 @@ class Roles extends Model {
   }
 }
 
+class Settings extends Model {
+  static schema = {
+    table: {
+      schema: 'public',
+      name: 'settings',
+    },
+    columns: {
+      id: {
+        type: String,
+        primaryKey: true,
+        defaultValue: null,
+      },
+      name: {
+        type: String,
+        defaultValue: null,
+      },
+      created_at: {
+        type: Date,
+        created: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+      },
+      updated_at: {
+        type: Date,
+        updated: true,
+        format: 'YYYY-MM-DD HH:mm:ss',
+      },
+    },
+    relations: {},
+  }
+}
+
 class UserRoles extends Model {
   static schema = {
     table: {
@@ -137,6 +173,28 @@ class UserRoles extends Model {
         primaryKey: true,
       },
       role_id: {
+        type: String,
+        defaultValue: null,
+        primaryKey: true,
+      },
+    },
+    relations: {},
+  }
+}
+
+class UserSetting extends Model {
+  static schema = {
+    table: {
+      schema: 'public',
+      name: 'user_setting',
+    },
+    columns: {
+      user_id: {
+        type: String,
+        defaultValue: null,
+        primaryKey: true,
+      },
+      setting_id: {
         type: String,
         defaultValue: null,
         primaryKey: true,
@@ -313,10 +371,27 @@ class Users extends Model {
             model: Roles,
             local: 'role_id',
             foreign: 'id',
+            type: 'many',
           },
           local: 'id',
           foreign: 'user_id',
-          type: 'join', // many to many
+          type: 'join', 
+          cascade: [
+            'save',
+            'delete',
+          ],
+        },
+        Setting: {
+          model: UserSetting,
+          join: {
+            model: Settings,
+            local: 'setting_id',
+            foreign: 'id',
+            type: 'one',
+          },
+          local: 'id',
+          foreign: 'user_id',
+          type: 'join', 
           cascade: [
             'save',
             'delete',
@@ -333,6 +408,10 @@ CREATE NEW ENTRY
 const roleModel = new Roles()
 roleModel.role = 'Admin'
 await roleModel.save()
+
+const settingModel = new Settings()
+settingModel.name = 'AdminSetting'
+await settingModel.save()
 
 const testNewUser = new Users()
 
@@ -360,6 +439,8 @@ testNewUser.Info.first_name = 'Aleks2'
 testNewUser.Info.last_name = 'Sokol2'
 
 await testNewUser.Roles.add(roleModel)
+
+await testNewUser.Setting.join(settingModel)
 
 const returnData = await testNewUser.save()
 
@@ -427,7 +508,13 @@ return
       role: 'Admin',
       updated_at: '2018-12-20 17:10:31'
     }
-  ]
+  ],
+  Setting: {
+    created_at: '2018-12-20 17:10:31',
+    id: 'be40ccb3-3a33-4b6e-9467-6907b0c4396b',
+    name: 'AdminSetting',
+    updated_at: '2018-12-20 17:10:31'
+  }
 }
 ```
 

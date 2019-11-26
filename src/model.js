@@ -1,7 +1,7 @@
 import ModelSchema from './schema'
 import Many from './many'
 import Join from './join'
-import {errors, getTypeOfValue, transaction} from './helper'
+import {errors, getTypeOfValue, transaction, join as ModelJoin, initJoin, joinData} from './helper'
 
 class Model {
     static schema = null
@@ -9,7 +9,8 @@ class Model {
     _schema = null
     _data = {}
     _change = {}
-    _join = null
+    _joinSchema = null
+    _joinModel = null
 
     constructor() {
       if (!this.constructor.schema) {
@@ -48,7 +49,9 @@ class Model {
                 this._data[name] = new RelationModel()
               } else if (type === 'many') {
                 this._data[name] = new Many(RelationModel)
-              } else if (type === 'join') {
+              } else if (type === 'join' && join.type === 'one') {
+                this._data[name] = initJoin(RelationModel, join)
+              } else if (type === 'join' && join.type === 'many') {
                 this._data[name] = new Join(RelationModel, join)
               }
             }
@@ -90,6 +93,11 @@ class Model {
             joinData[foreign] = data[local]
             await this._data[name].add(joinData)
           }
+        } else if (type === 'join' && typeOfValue === 'object') {
+          let joinData = Object.assign({}, data[name])
+          joinData[foreign] = data[local]
+
+          this._data[name] = await ModelJoin(RelationModel, join, joinData)
         } else if (type === 'one' && typeOfValue === 'object') {
           this._data[name] = new RelationModel()
           await this._data[name].setData(data[name])
@@ -106,9 +114,18 @@ class Model {
       return this.save(true, true)
     }
 
+    join = async(data = {}) => {
+      let dataJoin = Object.assign({}, data)
+      dataJoin[this._joinSchema.local] = data[this._joinSchema.foreign]
+
+      await this._joinModel.setData(dataJoin)
+
+      await this.setData(joinData(data))
+    }
+
     save = async(transactionMode = true, allSave = false) => {
-      if (this._join) {
-        return this._join.save(transactionMode)
+      if (this._joinModel) {
+        return this._joinModel.save(transactionMode)
       }
       try {
         const db = this._schema.getBuilder()
@@ -147,8 +164,8 @@ class Model {
     }
 
     delete = async(transactionMode = true) => {
-      if (this._join) {
-        return this._join.delete(transactionMode)
+      if (this._joinModel) {
+        return this._joinModel.delete(transactionMode)
       }
       try {
         const db = this._schema.getBuilder()
