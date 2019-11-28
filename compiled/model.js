@@ -30,6 +30,8 @@ var _join2 = _interopRequireDefault(_join);
 
 var _helper = require('./helper');
 
+var _joinHelper = require('./joinHelper');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Model = function () {
@@ -241,7 +243,7 @@ var Model = function () {
                 _joinItemData[foreign] = data[local];
 
                 _context.next = 85;
-                return (0, _helper.join)(name, RelationModel, join, _joinItemData, null);
+                return (0, _joinHelper.modelJoin)(name, RelationModel, join, _joinItemData, null);
 
               case 85:
                 _this._data[name] = _context.sent;
@@ -358,21 +360,20 @@ var Model = function () {
     }();
 
     this.join = function () {
-      var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4() {
-        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(data) {
         var newData, dataJoin;
         return _regenerator2.default.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return (0, _helper.joinData)(data);
+                return (0, _joinHelper.joinData)(data, _this._joinSchema.model);
 
               case 2:
                 newData = _context4.sent;
                 dataJoin = Object.assign({}, newData);
 
-                dataJoin[_this._joinSchema.local] = data[_this._joinSchema.foreign];
+                dataJoin[_this._joinSchema.local] = newData[_this._joinSchema.foreign];
 
                 _context4.next = 7;
                 return _this._joinModel.setData(dataJoin);
@@ -389,7 +390,7 @@ var Model = function () {
         }, _callee4, _this);
       }));
 
-      return function () {
+      return function (_x4) {
         return _ref4.apply(this, arguments);
       };
     }();
@@ -887,7 +888,7 @@ var Model = function () {
               } else if (type === 'many') {
                 _this._data[name] = new _many2.default(RelationModel);
               } else if (type === 'join' && join.type === 'one') {
-                _this._data[name] = (0, _helper.initJoin)(name, RelationModel, join, null);
+                _this._data[name] = (0, _joinHelper.initJoin)(name, RelationModel, join, null);
               } else if (type === 'join' && join.type === 'many') {
                 _this._data[name] = new _join2.default(name, RelationModel, join);
               }

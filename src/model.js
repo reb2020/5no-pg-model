@@ -1,7 +1,8 @@
 import ModelSchema from './schema'
 import Many from './many'
 import Join from './join'
-import {errors, getTypeOfValue, transaction, join as ModelJoin, initJoin, joinData} from './helper'
+import { errors, getTypeOfValue, transaction } from './helper'
+import { modelJoin, initJoin, joinData } from './joinHelper'
 
 class Model {
     static schema = null
@@ -99,7 +100,7 @@ class Model {
           let joinItemData = Object.assign({}, data[name])
           joinItemData[foreign] = data[local]
 
-          this._data[name] = await ModelJoin(name, RelationModel, join, joinItemData, null)
+          this._data[name] = await modelJoin(name, RelationModel, join, joinItemData, null)
         } else if (type === 'one' && typeOfValue === 'object') {
           this._data[name] = new RelationModel()
           await this._data[name].setData(data[name])
@@ -116,13 +117,12 @@ class Model {
       return this.save(true, true)
     }
 
-    join = async(data = {}) => {
-      const newData = await joinData(data)
+    join = async(data) => {
+      const newData = await joinData(data, this._joinSchema.model)
       let dataJoin = Object.assign({}, newData)
-      dataJoin[this._joinSchema.local] = data[this._joinSchema.foreign]
+      dataJoin[this._joinSchema.local] = newData[this._joinSchema.foreign]
 
       await this._joinModel.setData(dataJoin)
-
       await this.setData(newData)
     }
 

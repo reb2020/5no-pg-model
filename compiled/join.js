@@ -26,6 +26,8 @@ var _inherits3 = _interopRequireDefault(_inherits2);
 
 var _helper = require('./helper');
 
+var _joinHelper = require('./joinHelper');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Join = function (_Array) {
@@ -58,15 +60,14 @@ var Join = function (_Array) {
   (0, _createClass3.default)(Join, [{
     key: 'join',
     value: function () {
-      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
-        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(data) {
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.t0 = this;
                 _context.next = 3;
-                return (0, _helper.join)(this.name, this.model, this.joinData, data, this);
+                return (0, _joinHelper.modelJoin)(this.name, this.model, this.joinData, data, this);
 
               case 3:
                 _context.t1 = _context.sent;
@@ -81,7 +82,7 @@ var Join = function (_Array) {
         }, _callee, this);
       }));
 
-      function join() {
+      function join(_x) {
         return _ref.apply(this, arguments);
       }
 

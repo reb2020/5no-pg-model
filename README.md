@@ -88,7 +88,7 @@ count(field | [...fields], value | [...values]) // get count rows
 ## Model Relations Type "many" Methods
 
 ```js
-await add(data = {}) // Model data
+await add(data = {}) // Model data JSON
 fetch(field | [...fields], value | [...values]) // get rows by filter
 fetchOne(field | [...fields], value | [...values]) // get row by filter
 ```
@@ -96,7 +96,7 @@ fetchOne(field | [...fields], value | [...values]) // get row by filter
 ## Model Relations Type "join" Methods
 
 ```js
-await join(data = {}) // Model data
+await join(data) // Model data | Json | ID
 fetch(field | [...fields], value | [...values]) // get rows by filter if type many
 fetchOne(field | [...fields], value | [...values]) // get row by filter if type many
 ```
@@ -447,7 +447,7 @@ await testNewUser.Addresses.add({
 testNewUser.Info.first_name = 'Aleks2'
 testNewUser.Info.last_name = 'Sokol2'
 
-await testNewUser.Roles.join(roleModel)
+await testNewUser.Roles.join(roleModel.id)
 
 await testNewUser.Setting.join(settingModel)
 

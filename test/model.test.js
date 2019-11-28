@@ -658,6 +658,7 @@ describe('Model', () => {
       const returnData = await data.save()
 
       expect(returnData).to.eql(true)
+      expect(data.Role.id).to.eql(adminRole.id)
     })
 
     it('delete join', async() => {
@@ -665,9 +666,28 @@ describe('Model', () => {
 
       const returnData = await data.Role.delete()
 
-      // console.error(data, data.Role.id)
+      expect(returnData).to.eql(true)
+      expect(data.Role.id).to.eql(null)
+
+      let dataDel = data.Roles.fetchOne('role', 'Admin')
+
+      const r = await dataDel.delete()
+
+      expect(r).to.eql(true)
+      expect(data.Roles.length).to.eql(1)
+    })
+
+    it('add join by id', async() => {
+      const data = await Manager.build(Users).find(usersNewId)
+
+      await data.Role.join(adminRole.id)
+      await data.Roles.join(adminRole.id)
+
+      const returnData = await data.save()
 
       expect(returnData).to.eql(true)
+      expect(data.Role.id).to.eql(adminRole.id)
+      expect(data.Roles.length).to.eql(2)
     })
 
     it('create duplicate', async() => {

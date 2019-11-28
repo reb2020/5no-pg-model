@@ -1,4 +1,5 @@
-import { join as ModelJoin, getTypeOfValue } from './helper'
+import { getTypeOfValue } from './helper'
+import { modelJoin } from './joinHelper'
 
 class Join extends Array {
   constructor(name, model, join) {
@@ -21,8 +22,8 @@ class Join extends Array {
     })
   }
 
-  async join(data = {}) {
-    this.push(await ModelJoin(this.name, this.model, this.joinData, data, this))
+  async join(data) {
+    this.push(await modelJoin(this.name, this.model, this.joinData, data, this))
   }
 
   fetch(fields, values) {
