@@ -42,7 +42,7 @@ var Join = function (_Array) {
         return model;
       }
     });
-    Object.defineProperty(_this, 'join', {
+    Object.defineProperty(_this, 'joinData', {
       get: function get() {
         return join;
       }
@@ -51,7 +51,7 @@ var Join = function (_Array) {
   }
 
   (0, _createClass3.default)(Join, [{
-    key: 'add',
+    key: 'join',
     value: function () {
       var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
         var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -61,7 +61,7 @@ var Join = function (_Array) {
               case 0:
                 _context.t0 = this;
                 _context.next = 3;
-                return (0, _helper.join)(this.model, this.join, data);
+                return (0, _helper.join)(this.model, this.joinData, data);
 
               case 3:
                 _context.t1 = _context.sent;
@@ -76,11 +76,11 @@ var Join = function (_Array) {
         }, _callee, this);
       }));
 
-      function add() {
+      function join() {
         return _ref.apply(this, arguments);
       }
 
-      return add;
+      return join;
     }()
   }, {
     key: 'fetch',

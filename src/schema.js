@@ -24,7 +24,7 @@ class ModelSchema {
   }
 
   isUpdatable = () => {
-    if (Object.keys(this.primaryKeysValue).length && this.type !== 'new') {
+    if (Object.keys(this.primaryKeysValue).length && this.type !== 'join') {
       return true
     }
     return false
@@ -42,7 +42,7 @@ class ModelSchema {
       returnData[this.updatedField] = nowDate
     }
 
-    return Object.assign({}, data, returnData, (this.type === 'new' ? this.primaryKeysValue : {}))
+    return Object.assign({}, data, returnData, (this.type === 'join' ? this.primaryKeysValue : {}))
   }
 
   getBuilder = () => {
@@ -51,6 +51,23 @@ class ModelSchema {
     if (this.isUpdatable()) {
       for (let primaryKey of this.primaryKeys) {
         db.where(primaryKey, '=', this.primaryKeysValue[primaryKey])
+      }
+    }
+
+    if (this.type === 'join') {
+      let doUpdate = []
+      for (let field of Object.keys(this.columns)) {
+        if (field !== this.createdField && !this.primaryKeys.includes(field)) {
+          doUpdate.push(field)
+        }
+      }
+
+      db.onConflict(this.primaryKeys)
+
+      if (doUpdate.length) {
+        db.doUpdate(doUpdate)
+      } else {
+        db.doNothing()
       }
     }
 
@@ -79,7 +96,7 @@ class ModelSchema {
             if (type === 'join') {
               if (item._joinModel[foreign] !== localValue) {
                 item._joinModel[foreign] = localValue
-                item._joinModel._schema.type = 'new'
+                item._joinModel._schema.type = 'join'
               }
             } else {
               if (item[foreign] !== localValue) {
@@ -99,7 +116,7 @@ class ModelSchema {
         } else {
           if (data[name]._joinModel && data[name]._joinModel[foreign] !== localValue) {
             data[name]._joinModel[foreign] = localValue
-            data[name]._joinModel._schema.type = 'new'
+            data[name]._joinModel._schema.type = 'join'
           } else {
             if (data[name][foreign] !== localValue) {
               data[name][foreign] = localValue

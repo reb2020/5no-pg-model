@@ -183,7 +183,7 @@ var Model = function () {
 
                 _joinData[foreign] = data[local];
                 _context.next = 61;
-                return _this._data[name].add(_joinData);
+                return _this._data[name].join(_joinData);
 
               case 61:
                 _iteratorNormalCompletion3 = true;

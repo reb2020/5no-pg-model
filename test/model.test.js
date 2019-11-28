@@ -83,7 +83,6 @@ class UserRole extends Model {
       role_id: {
         type: String,
         defaultValue: null,
-        primaryKey: true,
       },
     },
     relations: {},
@@ -591,8 +590,8 @@ describe('Model', () => {
       testNewUser.Info.first_name = 'Aleks2'
       testNewUser.Info.last_name = 'Sokol2'
 
-      await testNewUser.Roles.add(adminRole)
-      await testNewUser.Roles.add(customerRole)
+      await testNewUser.Roles.join(adminRole)
+      await testNewUser.Roles.join(customerRole)
       await testNewUser.Role.join(adminRole)
 
       const returnData = await testNewUser.save()

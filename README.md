@@ -68,6 +68,7 @@ DATABASE_QUERY_LOG=true
 
 ```js
 async save(transactionMode = true, allSave = false) // Save changes
+async join(data) // set changes by Json data
 async setData(data) // set changes by Json data
 async saveByData(data) // Save changes by Json data
 async delete() // Delete entries
@@ -90,6 +91,14 @@ count(field | [...fields], value | [...values]) // get count rows
 await add(data = {}) // Model data
 fetch(field, value) // get rows by filter
 fetchOne(field, value) // get row by filter
+```
+
+## Model Relations Type "join" Methods
+
+```js
+await join(data = {}) // Model data
+fetch(field, value) // get rows by filter if type many
+fetchOne(field, value) // get row by filter if type many
 ```
 
 ## Examples
@@ -438,7 +447,7 @@ await testNewUser.Addresses.add({
 testNewUser.Info.first_name = 'Aleks2'
 testNewUser.Info.last_name = 'Sokol2'
 
-await testNewUser.Roles.add(roleModel)
+await testNewUser.Roles.join(roleModel)
 
 await testNewUser.Setting.join(settingModel)
 

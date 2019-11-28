@@ -195,9 +195,16 @@ CREATE TABLE "public"."user_roles" (
 )
 WITH (OIDS=FALSE);
 
+
+CREATE UNIQUE INDEX "user_roles_uidx" ON "public"."user_roles" USING btree (user_id, role_id);    
+
+
 DROP TABLE IF EXISTS "public"."user_role";
 CREATE TABLE "public"."user_role" (
 	"user_id" uuid NOT NULL,
 	"role_id" uuid NOT NULL
 )
 WITH (OIDS=FALSE);
+
+
+CREATE UNIQUE INDEX "user_role_uidx" ON "public"."user_role" USING btree (user_id);   

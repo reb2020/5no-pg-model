@@ -91,7 +91,7 @@ class Model {
           for (let item of data[name]) {
             let joinData = Object.assign({}, item)
             joinData[foreign] = data[local]
-            await this._data[name].add(joinData)
+            await this._data[name].join(joinData)
           }
         } else if (type === 'join' && typeOfValue === 'object') {
           let joinData = Object.assign({}, data[name])

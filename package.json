@@ -5,6 +5,7 @@
   "main": "compiled/index.js",
   "scripts": {
     "clean": "rm -rf compiled",
+    "clean:test": "rm -rf compiled/test",
     "lint": "eslint --ext .js src",
     "lint:fix": "eslint --fix --ext .js src",
     "test": "yarn test:db && yarn test:lint && yarn test:build && yarn test:run && yarn test:clean",
@@ -14,7 +15,7 @@
     "test:run": "cp test/mocha.opts compiled/test && mocha compiled/test",
     "test:db": "./test_db",
     "build": "babel src -d compiled",
-    "release": "yarn lint && yarn clean && yarn build && yarn test"
+    "release": "yarn lint && yarn clean && yarn build && yarn test && yarn clean:test"
   },
   "author": "reb2020",
   "license": "MIT",
@@ -32,7 +33,7 @@
     "url": "git+https://github.com/reb2020/5no-pg-model.git"
   },
   "dependencies": {
-    "5no-pg-builder": "^1.1.2",
+    "5no-pg-builder": "^1.1.4",
     "5no-schema": "^1.2.1"
   },
   "devDependencies": {

@@ -9,15 +9,15 @@ class Join extends Array {
         return model
       },
     })
-    Object.defineProperty(this, 'join', {
+    Object.defineProperty(this, 'joinData', {
       get: () => {
         return join
       },
     })
   }
 
-  async add(data = {}) {
-    this.push(await ModelJoin(this.model, this.join, data))
+  async join(data = {}) {
+    this.push(await ModelJoin(this.model, this.joinData, data))
   }
 
   fetch(field, value) {
