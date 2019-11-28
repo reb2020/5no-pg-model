@@ -6,9 +6,11 @@ import {errors, getTypeOfValue, transaction, join as ModelJoin, initJoin, joinDa
 class Model {
     static schema = null
 
+    _parent = null
     _schema = null
     _data = {}
     _change = {}
+    _joinName = null
     _joinSchema = null
     _joinModel = null
 
@@ -33,7 +35,7 @@ class Model {
           },
           get: () => {
             if (this._schema.primaryKeys.includes(column)) {
-              return this._schema.primaryKeysValue[column]
+              return this._schema.primaryKeysValue[column] || this._schema.columns[column]
             }
             return this._data[column]
           },
@@ -50,9 +52,9 @@ class Model {
               } else if (type === 'many') {
                 this._data[name] = new Many(RelationModel)
               } else if (type === 'join' && join.type === 'one') {
-                this._data[name] = initJoin(RelationModel, join)
+                this._data[name] = initJoin(name, RelationModel, join, null)
               } else if (type === 'join' && join.type === 'many') {
-                this._data[name] = new Join(RelationModel, join)
+                this._data[name] = new Join(name, RelationModel, join)
               }
             }
             return this._data[name]
@@ -87,17 +89,17 @@ class Model {
             await this._data[name].add(item)
           }
         } else if (type === 'join' && typeOfValue === 'array') {
-          this._data[name] = new Join(RelationModel, join)
+          this._data[name] = new Join(name, RelationModel, join)
           for (let item of data[name]) {
-            let joinData = Object.assign({}, item)
-            joinData[foreign] = data[local]
-            await this._data[name].join(joinData)
+            let joinItemData = Object.assign({}, item)
+            joinItemData[foreign] = data[local]
+            await this._data[name].join(joinItemData)
           }
         } else if (type === 'join' && typeOfValue === 'object') {
-          let joinData = Object.assign({}, data[name])
-          joinData[foreign] = data[local]
+          let joinItemData = Object.assign({}, data[name])
+          joinItemData[foreign] = data[local]
 
-          this._data[name] = await ModelJoin(RelationModel, join, joinData)
+          this._data[name] = await ModelJoin(name, RelationModel, join, joinItemData, null)
         } else if (type === 'one' && typeOfValue === 'object') {
           this._data[name] = new RelationModel()
           await this._data[name].setData(data[name])
@@ -115,12 +117,13 @@ class Model {
     }
 
     join = async(data = {}) => {
-      let dataJoin = Object.assign({}, data)
+      const newData = await joinData(data)
+      let dataJoin = Object.assign({}, newData)
       dataJoin[this._joinSchema.local] = data[this._joinSchema.foreign]
 
       await this._joinModel.setData(dataJoin)
 
-      await this.setData(joinData(data))
+      await this.setData(newData)
     }
 
     save = async(transactionMode = true, allSave = false) => {
@@ -134,24 +137,29 @@ class Model {
 
         const change = Object.keys(this._change)
 
+        let isFeasible = false
+
         if (!this._schema.isUpdatable()) {
+          isFeasible = true
           db.insert(data)
         } else if (change.length || allSave === true) {
+          isFeasible = true
           let updateData = {}
           change.forEach((key) => {
             updateData[key] = data[key]
           })
           db.update(allSave === true ? data : updateData)
-        } else {
-          return true
         }
 
         this._change = {}
 
         if (transactionMode) await transaction.begin()
 
-        const result = await db.execute()
-        await this.setData(result.rows[0])
+        if (isFeasible) {
+          const result = await db.execute()
+          await this.setData(result.rows[0])
+        }
+
         await this._schema.saveCascade(this._data, allSave)
 
         if (transactionMode) await transaction.commit()
@@ -164,8 +172,19 @@ class Model {
     }
 
     delete = async(transactionMode = true) => {
+      if (this._parent) {
+        const type = getTypeOfValue(this._parent)
+
+        if (type === 'many' || type === 'join') {
+          this._parent.removeItems(this._schema.primaryKeys, this._schema.getPrimaryKeysValues())
+        }
+      }
       if (this._joinModel) {
-        return this._joinModel.delete(transactionMode)
+        this.refreshData()
+        const joinModelPrimaryKeysValue = this._joinModel._schema.primaryKeysValue
+        const deleteJoinModel = await this._joinModel.delete(transactionMode)
+        this._joinModel._schema.primaryKeysValue = joinModelPrimaryKeysValue
+        return deleteJoinModel
       }
       try {
         const db = this._schema.getBuilder()
@@ -180,11 +199,25 @@ class Model {
 
         if (transactionMode) await transaction.commit()
 
+        this.refreshData()
+
         return true
       } catch (e) {
         if (transactionMode) await transaction.rollback()
         return errors(e)
       }
+    }
+
+    refreshData = () => {
+      Object.keys(this._schema.columns).forEach((column) => {
+        if (!this._schema.primaryKeys.includes(column)) {
+          this._data[column] = this._schema.columns[column]
+        }
+      })
+
+      this._schema.setPrimaryKeysValues({})
+
+      this._change = {}
     }
 
     toJSON = async() => {

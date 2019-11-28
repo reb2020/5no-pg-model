@@ -24,6 +24,8 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+var _helper = require('./helper');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Many = function (_Array) {
@@ -55,14 +57,16 @@ var Many = function (_Array) {
               case 0:
                 RelationModel = this.model;
                 newRelationModel = new RelationModel();
-                _context.next = 4;
+
+                newRelationModel._parent = this;
+                _context.next = 5;
                 return newRelationModel.setData(data);
 
-              case 4:
+              case 5:
                 this.push(newRelationModel);
                 return _context.abrupt('return', newRelationModel);
 
-              case 6:
+              case 7:
               case 'end':
                 return _context.stop();
             }
@@ -78,15 +82,129 @@ var Many = function (_Array) {
     }()
   }, {
     key: 'fetch',
-    value: function fetch(field, value) {
-      return this.filter(function (item) {
-        return item[field] === value;
-      });
+    value: function fetch(fields, values) {
+      var indexes = this.getItemsIndexes(fields, values);
+      var returnData = [];
+      if (indexes.length) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = indexes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var index = _step.value;
+
+            returnData.push(this[index]);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+
+      return returnData;
     }
   }, {
     key: 'fetchOne',
-    value: function fetchOne(field, value) {
-      return this.fetch(field, value).pop();
+    value: function fetchOne(fields, values) {
+      var indexes = this.getItemsIndexes(fields, values);
+      if (indexes.length) {
+        return this[indexes[0]];
+      }
+      return null;
+    }
+  }, {
+    key: 'getItemsIndexes',
+    value: function getItemsIndexes(fields, values) {
+      var typeOfFields = (0, _helper.getTypeOfValue)(fields);
+      if (typeOfFields !== 'array') {
+        fields = [fields];
+        values = [values];
+      }
+      var indexes = [];
+      this.forEach(function (item, itemIndex) {
+        var indexOfField = 0;
+        var isAvailable = true;
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = fields[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var field = _step2.value;
+
+            if (item[field] !== values[indexOfField]) {
+              isAvailable = false;
+            }
+            indexOfField++;
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+
+        if (isAvailable) {
+          indexes.push(itemIndex);
+        }
+      });
+
+      return indexes;
+    }
+  }, {
+    key: 'removeItemByIndex',
+    value: function removeItemByIndex(index) {
+      this.splice(index, 1);
+    }
+  }, {
+    key: 'removeItems',
+    value: function removeItems(fields, values) {
+      var indexes = this.getItemsIndexes(fields, values);
+      if (indexes.length) {
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+          for (var _iterator3 = indexes[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var index = _step3.value;
+
+            this.removeItemByIndex(index);
+          }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
+          }
+        }
+      }
     }
   }]);
   return Many;

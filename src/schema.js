@@ -23,6 +23,18 @@ class ModelSchema {
     this.relations = modelSchemaRelationsFormater(relations)
   }
 
+  getPrimaryKeysValues = () => {
+    let values = []
+    for (let valueKey of Object.keys(this.primaryKeysValue)) {
+      values.push(this.primaryKeysValue[valueKey])
+    }
+    return values
+  }
+
+  setPrimaryKeysValues = (data) => {
+    this.primaryKeysValue = data
+  }
+
   isUpdatable = () => {
     if (Object.keys(this.primaryKeysValue).length && this.type !== 'join') {
       return true

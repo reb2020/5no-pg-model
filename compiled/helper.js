@@ -135,51 +135,47 @@ var errors = function errors(_errors) {
   return { error: typeof _errors.message !== 'undefined' ? _errors.message : _errors };
 };
 
-var initJoin = function initJoin(RelationModel, join) {
+var initJoin = function initJoin(name, RelationModel, join, parent) {
   var JoinModel = join.model;
 
   var InitModelJoin = new JoinModel();
+  InitModelJoin._joinName = name;
   InitModelJoin._joinSchema = join;
   InitModelJoin._joinModel = new RelationModel();
+  InitModelJoin._parent = parent;
 
   return InitModelJoin;
 };
 
-var joinData = function joinData(data) {
-  var setData = {};
-
-  if ((typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)) === 'object' && data.constructor.name.toLowerCase() === 'object') {
-    setData = Object.assign({}, data);
-  } else {
-    setData = data.toJSON();
-  }
-
-  return setData;
-};
-
-var join = function () {
-  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(RelationModel, _join, data) {
-    var InitModelJoin, dataJoin;
+var joinData = function () {
+  var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(data) {
+    var setData;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            InitModelJoin = initJoin(RelationModel, _join);
-            dataJoin = Object.assign({}, data);
+            setData = {};
 
-            dataJoin[_join.local] = data[_join.foreign];
+            if (!((typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)) === 'object' && data.constructor.name.toLowerCase() === 'object')) {
+              _context.next = 5;
+              break;
+            }
 
-            _context.next = 5;
-            return InitModelJoin._joinModel.setData(dataJoin);
+            setData = Object.assign({}, data);
+            _context.next = 8;
+            break;
 
           case 5:
             _context.next = 7;
-            return InitModelJoin.setData(joinData(data));
+            return data.toJSON();
 
           case 7:
-            return _context.abrupt('return', InitModelJoin);
+            setData = _context.sent;
 
           case 8:
+            return _context.abrupt('return', setData);
+
+          case 9:
           case 'end':
             return _context.stop();
         }
@@ -187,8 +183,48 @@ var join = function () {
     }, _callee, undefined);
   }));
 
-  return function join(_x, _x2, _x3) {
+  return function joinData(_x) {
     return _ref.apply(this, arguments);
+  };
+}();
+
+var join = function () {
+  var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(name, RelationModel, _join, data, parent) {
+    var InitModelJoin, dataJoin, newDataJoin;
+    return _regenerator2.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            InitModelJoin = initJoin(name, RelationModel, _join, parent);
+            _context2.next = 3;
+            return joinData(data);
+
+          case 3:
+            dataJoin = _context2.sent;
+            newDataJoin = Object.assign({}, dataJoin);
+
+            newDataJoin[_join.local] = dataJoin[_join.foreign];
+
+            _context2.next = 8;
+            return InitModelJoin._joinModel.setData(newDataJoin);
+
+          case 8:
+            _context2.next = 10;
+            return InitModelJoin.setData(dataJoin);
+
+          case 10:
+            return _context2.abrupt('return', InitModelJoin);
+
+          case 11:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, undefined);
+  }));
+
+  return function join(_x2, _x3, _x4, _x5, _x6) {
+    return _ref2.apply(this, arguments);
   };
 }();
 

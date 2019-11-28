@@ -12,6 +12,7 @@ const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]
 const dateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/i
 
 let usersId = null
+let usersNewId = null
 let adminRole = null
 let customerRole = null
 
@@ -470,7 +471,7 @@ const jsonTestUpdateData = {
   'Role': {
     'created_at': sinon.match(dateRegex),
     'id': sinon.match(uuidV4Regex),
-    'role': 'Admin',
+    'role': 'Customer',
     'updated_at': sinon.match(dateRegex),
   },
   'created_at': sinon.match(dateRegex),
@@ -598,7 +599,7 @@ describe('Model', () => {
 
       usersId = testNewUser.id
 
-      expect(returnData).to.eql(returnData)
+      expect(returnData).to.eql(true)
     })
 
     it('create without relations', async() => {
@@ -624,9 +625,47 @@ describe('Model', () => {
           street_name: 'Test 100',
           postcode: '100501',
         }],
+        Roles: [ await adminRole.toJSON() ],
       }
 
       const returnData = await testNewUser.saveByData(newData)
+
+      usersNewId = testNewUser.id
+
+      expect(returnData).to.eql(true)
+    })
+
+    it('just a save', async() => {
+      const data = await Manager.build(Users).find(usersNewId)
+      data.secret_key = '100'
+
+      const returnData = await data.save()
+
+      expect(returnData).to.eql(true)
+    })
+
+    it('add join', async() => {
+      const data = await Manager.build(Users).find(usersNewId)
+
+      await data.Addresses.add({
+        street_name: 'Test1000',
+        postcode: '100502',
+      })
+
+      await data.Roles.join(customerRole)
+      await data.Role.join(adminRole)
+
+      const returnData = await data.save()
+
+      expect(returnData).to.eql(true)
+    })
+
+    it('delete join', async() => {
+      const data = await Manager.build(Users).find(usersNewId)
+
+      const returnData = await data.Role.delete()
+
+      // console.error(data, data.Role.id)
 
       expect(returnData).to.eql(true)
     })
@@ -719,6 +758,8 @@ describe('Model', () => {
         },
       ]
 
+      await data.Role.join(customerRole)
+
       await data.save()
       const testData = await data.toJSON()
 
@@ -792,13 +833,19 @@ describe('Model', () => {
 
       let dataDel = data.Roles.fetchOne('role', 'Admin')
 
-      expect(await dataDel.delete()).to.eql(true)
+      const r = await dataDel.delete()
+
+      expect(r).to.eql(true)
+      expect(data.Roles.length).to.eql(1)
     })
 
     it('delete related item', async() => {
       let data = await Manager.build(Users).find(usersId)
-
       expect(await data.Role.delete()).to.eql(true)
+
+      expect(await data.save()).to.eql(true)
+
+      expect(data.Role.id).to.eql(null)
     })
 
     it('delete', async() => {
