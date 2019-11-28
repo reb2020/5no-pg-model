@@ -89,16 +89,16 @@ count(field | [...fields], value | [...values]) // get count rows
 
 ```js
 await add(data = {}) // Model data
-fetch(field, value) // get rows by filter
-fetchOne(field, value) // get row by filter
+fetch(field | [...fields], value | [...values]) // get rows by filter
+fetchOne(field | [...fields], value | [...values]) // get row by filter
 ```
 
 ## Model Relations Type "join" Methods
 
 ```js
 await join(data = {}) // Model data
-fetch(field, value) // get rows by filter if type many
-fetchOne(field, value) // get row by filter if type many
+fetch(field | [...fields], value | [...values]) // get rows by filter if type many
+fetchOne(field | [...fields], value | [...values]) // get row by filter if type many
 ```
 
 ## Examples
