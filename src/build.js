@@ -46,7 +46,7 @@ class Build {
     }
 
     _initDb = (fields, values, type = TYPE_MANY, order = null, limit = null) => {
-      const db = getBuilder(this._schema)
+      const db = this.builder()
 
       if (this._join) {
         db.select()
@@ -140,6 +140,8 @@ class Build {
         return returnData
       }
     }
+
+    builder = () => getBuilder(this._schema)
 
     find = async(...values) => {
       return this._execute(this._schema.primaryKeys, values, TYPE_ONE)

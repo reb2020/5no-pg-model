@@ -1,6 +1,6 @@
 {
   "name": "5no-pg-model",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "JS ORM for PostgreSQL",
   "main": "compiled/index.js",
   "scripts": {

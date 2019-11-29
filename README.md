@@ -79,6 +79,7 @@ async toJSON() // Return to JSON format
 ## Manager.build(model, json = false) 
 
 ```js
+builder() // get a Builder for customing query [5no-pg-builder](https://www.npmjs.com/package/5no-pg-builder)
 find(...values) // get one row by primary keys
 findOne(field | [...fields], value | [...values]) // get one row by filter
 findAll(field | [...fields], value | [...values], order = null, limit = null) // get all rows by filter

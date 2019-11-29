@@ -158,7 +158,7 @@ var _initialiseProps = function _initialiseProps() {
     var order = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
     var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
 
-    var db = (0, _helper.getBuilder)(_this._schema);
+    var db = _this.builder();
 
     if (_this._join) {
       db.select();
@@ -408,6 +408,10 @@ var _initialiseProps = function _initialiseProps() {
       return _ref2.apply(this, arguments);
     };
   }();
+
+  this.builder = function () {
+    return (0, _helper.getBuilder)(_this._schema);
+  };
 
   this.find = function () {
     var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
