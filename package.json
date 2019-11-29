@@ -33,7 +33,7 @@
     "url": "git+https://github.com/reb2020/5no-pg-model.git"
   },
   "dependencies": {
-    "5no-pg-builder": "^1.1.4",
+    "5no-pg-builder": "^1.1.7",
     "5no-schema": "^1.2.1"
   },
   "devDependencies": {

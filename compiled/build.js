@@ -263,7 +263,7 @@ var _initialiseProps = function _initialiseProps() {
       var order = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
       var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
 
-      var Model, db, result, returnData, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, item, modelData;
+      var Model, db, rows, returnData, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, item, modelData;
 
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
@@ -272,22 +272,22 @@ var _initialiseProps = function _initialiseProps() {
               Model = _this._model;
               db = _this._initDb(fields, values, type, order, limit);
               _context2.next = 4;
-              return db.execute();
+              return db.rows();
 
             case 4:
-              result = _context2.sent;
+              rows = _context2.sent;
 
               if (!(type === TYPE_COUNT)) {
                 _context2.next = 9;
                 break;
               }
 
-              if (!(result.rows.length === 1)) {
+              if (!(rows.length === 1)) {
                 _context2.next = 8;
                 break;
               }
 
-              return _context2.abrupt('return', Number(result.rows.pop().count_rows));
+              return _context2.abrupt('return', Number(rows.pop().count_rows));
 
             case 8:
               return _context2.abrupt('return', 0);
@@ -298,7 +298,7 @@ var _initialiseProps = function _initialiseProps() {
               _didIteratorError4 = false;
               _iteratorError4 = undefined;
               _context2.prev = 13;
-              _iterator4 = result.rows[Symbol.iterator]();
+              _iterator4 = rows[Symbol.iterator]();
 
             case 15:
               if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {

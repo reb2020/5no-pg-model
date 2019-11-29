@@ -399,7 +399,7 @@ var Model = function () {
       var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5() {
         var transactionMode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
         var allSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-        var db, dataAfterFilter, data, change, isFeasible, updateData, result;
+        var db, dataAfterFilter, data, change, isFeasible, updateData, rows;
         return _regenerator2.default.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
@@ -465,12 +465,12 @@ var Model = function () {
                 }
 
                 _context5.next = 20;
-                return db.execute();
+                return db.rows();
 
               case 20:
-                result = _context5.sent;
+                rows = _context5.sent;
                 _context5.next = 23;
-                return _this.setData(result.rows[0]);
+                return _this.setData(rows[0]);
 
               case 23:
                 _context5.next = 25;

@@ -882,5 +882,15 @@ describe('Model', () => {
 
       expect(await data.delete()).to.eql(true)
     })
+
+    it('builder', async() => {
+      const builder = await Manager.build(Users).builder()
+
+      builder.select().where('id', '=', usersNewId)
+
+      const data = await builder.rows()
+
+      expect(data[0].id).to.eql(usersNewId)
+    })
   })
 })

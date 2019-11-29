@@ -163,8 +163,8 @@ class Model {
         if (transactionMode) await transaction.begin()
 
         if (isFeasible) {
-          const result = await db.execute()
-          await this.setData(result.rows[0])
+          const rows = await db.rows()
+          await this.setData(rows[0])
         }
 
         await this._schema.saveCascade(this._data, allSave)

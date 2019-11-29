@@ -107,11 +107,11 @@ class Build {
       const Model = this._model
       const db = this._initDb(fields, values, type, order, limit)
 
-      const result = await db.execute()
+      const rows = await db.rows()
 
       if (type === TYPE_COUNT) {
-        if (result.rows.length === 1) {
-          return Number(result.rows.pop().count_rows)
+        if (rows.length === 1) {
+          return Number(rows.pop().count_rows)
         }
 
         return 0
@@ -119,7 +119,7 @@ class Build {
 
       let returnData = []
 
-      for (let item of result.rows) {
+      for (let item of rows) {
         await this._relations(item)
         if (this._isRelations === true) {
           returnData.push(item)
