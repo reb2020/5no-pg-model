@@ -675,6 +675,15 @@ describe('Model', () => {
 
       expect(r).to.eql(true)
       expect(data.Roles.length).to.eql(1)
+
+      expect(data.Addresses.length).to.eql(2)
+
+      let dataAddresses = data.Addresses.fetchOne('street_name', 'Test1000')
+
+      const rD = await dataAddresses.delete()
+
+      expect(rD).to.eql(true)
+      expect(data.Addresses.length).to.eql(1)
     })
 
     it('add join by id', async() => {
