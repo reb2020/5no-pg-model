@@ -135,20 +135,27 @@ class Model {
         const dataAfterFilter = await this.getData(allSave)
         const data = await this._schema.validate(dataAfterFilter)
 
-        const change = Object.keys(this._change)
+        const change = Object.keys(allSave === true ? data : this._change)
 
         let isFeasible = false
 
         if (!this._schema.isUpdatable()) {
           isFeasible = true
           db.insert(data)
-        } else if (change.length || allSave === true) {
+        } else if (change.length) {
           isFeasible = true
           let updateData = {}
+
+          if (this._schema.updatedField) {
+            updateData[this._schema.updatedField] = data[this._schema.updatedField]
+          }
+
           change.forEach((key) => {
-            updateData[key] = data[key]
+            if (this._schema.createdField !== key) {
+              updateData[key] = data[key]
+            }
           })
-          db.update(allSave === true ? data : updateData)
+          db.update(updateData)
         }
 
         this._change = {}

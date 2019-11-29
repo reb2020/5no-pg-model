@@ -424,21 +424,28 @@ var Model = function () {
 
               case 9:
                 data = _context5.sent;
-                change = Object.keys(_this._change);
+                change = Object.keys(allSave === true ? data : _this._change);
                 isFeasible = false;
 
 
                 if (!_this._schema.isUpdatable()) {
                   isFeasible = true;
                   db.insert(data);
-                } else if (change.length || allSave === true) {
+                } else if (change.length) {
                   isFeasible = true;
                   updateData = {};
 
+
+                  if (_this._schema.updatedField) {
+                    updateData[_this._schema.updatedField] = data[_this._schema.updatedField];
+                  }
+
                   change.forEach(function (key) {
-                    updateData[key] = data[key];
+                    if (_this._schema.createdField !== key) {
+                      updateData[key] = data[key];
+                    }
                   });
-                  db.update(allSave === true ? data : updateData);
+                  db.update(updateData);
                 }
 
                 _this._change = {};
