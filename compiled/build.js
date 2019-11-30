@@ -260,7 +260,7 @@ var _initialiseProps = function _initialiseProps() {
   };
 
   this._rowsHandler = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(rows, type) {
+    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(rows) {
       var Model, returnData, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, item, modelData;
 
       return _regenerator2.default.wrap(function _callee2$(_context2) {
@@ -268,119 +268,110 @@ var _initialiseProps = function _initialiseProps() {
           switch (_context2.prev = _context2.next) {
             case 0:
               Model = _this._model;
-
-              if (!(type === TYPE_COUNT)) {
-                _context2.next = 3;
-                break;
-              }
-
-              return _context2.abrupt('return', rows);
-
-            case 3:
               returnData = [];
               _iteratorNormalCompletion4 = true;
               _didIteratorError4 = false;
               _iteratorError4 = undefined;
-              _context2.prev = 7;
+              _context2.prev = 5;
               _iterator4 = rows[Symbol.iterator]();
 
-            case 9:
+            case 7:
               if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
-                _context2.next = 32;
+                _context2.next = 30;
                 break;
               }
 
               item = _step4.value;
-              _context2.next = 13;
+              _context2.next = 11;
               return _this._relations(item);
 
-            case 13:
+            case 11:
               if (!(_this._isRelations === true)) {
-                _context2.next = 17;
+                _context2.next = 15;
                 break;
               }
 
               returnData.push(item);
-              _context2.next = 29;
+              _context2.next = 27;
               break;
 
-            case 17:
+            case 15:
               modelData = new Model();
-              _context2.next = 20;
+              _context2.next = 18;
               return modelData.setData(item);
 
-            case 20:
+            case 18:
               if (!(_this._json === true)) {
-                _context2.next = 28;
+                _context2.next = 26;
                 break;
               }
 
               _context2.t0 = returnData;
-              _context2.next = 24;
+              _context2.next = 22;
               return modelData.toJSON();
 
-            case 24:
+            case 22:
               _context2.t1 = _context2.sent;
 
               _context2.t0.push.call(_context2.t0, _context2.t1);
 
-              _context2.next = 29;
+              _context2.next = 27;
               break;
 
-            case 28:
+            case 26:
               returnData.push(modelData);
 
-            case 29:
+            case 27:
               _iteratorNormalCompletion4 = true;
-              _context2.next = 9;
+              _context2.next = 7;
+              break;
+
+            case 30:
+              _context2.next = 36;
               break;
 
             case 32:
-              _context2.next = 38;
-              break;
-
-            case 34:
-              _context2.prev = 34;
-              _context2.t2 = _context2['catch'](7);
+              _context2.prev = 32;
+              _context2.t2 = _context2['catch'](5);
               _didIteratorError4 = true;
               _iteratorError4 = _context2.t2;
 
-            case 38:
-              _context2.prev = 38;
-              _context2.prev = 39;
+            case 36:
+              _context2.prev = 36;
+              _context2.prev = 37;
 
               if (!_iteratorNormalCompletion4 && _iterator4.return) {
                 _iterator4.return();
               }
 
-            case 41:
-              _context2.prev = 41;
+            case 39:
+              _context2.prev = 39;
 
               if (!_didIteratorError4) {
-                _context2.next = 44;
+                _context2.next = 42;
                 break;
               }
 
               throw _iteratorError4;
 
+            case 42:
+              return _context2.finish(39);
+
+            case 43:
+              return _context2.finish(36);
+
             case 44:
-              return _context2.finish(41);
-
-            case 45:
-              return _context2.finish(38);
-
-            case 46:
               return _context2.abrupt('return', returnData);
 
-            case 47:
+            case 45:
             case 'end':
               return _context2.stop();
           }
         }
-      }, _callee2, _this, [[7, 34, 38, 46], [39,, 41, 45]]);
+      }, _callee2, _this, [[5, 32, 36, 44], [37,, 39, 43]]);
     }));
 
-    return function (_x6, _x7) {
+    return function (_x6) {
       return _ref2.apply(this, arguments);
     };
   }();
@@ -396,39 +387,32 @@ var _initialiseProps = function _initialiseProps() {
           switch (_context3.prev = _context3.next) {
             case 0:
               db = _this._initDb(fields, values, type, order, limit);
-              _context3.next = 3;
-              return db.rows();
-
-            case 3:
-              rows = _context3.sent;
 
               if (!(type === TYPE_COUNT)) {
-                _context3.next = 8;
+                _context3.next = 3;
                 break;
               }
 
-              if (!(rows.length === 1)) {
-                _context3.next = 7;
-                break;
-              }
+              return _context3.abrupt('return', db.result());
 
-              return _context3.abrupt('return', Number(rows.pop().count_rows));
+            case 3:
+              _context3.next = 5;
+              return db.rows();
 
-            case 7:
-              return _context3.abrupt('return', 0);
+            case 5:
+              rows = _context3.sent;
 
-            case 8:
               if (!(type === TYPE_ONE)) {
-                _context3.next = 12;
+                _context3.next = 10;
                 break;
               }
 
               return _context3.abrupt('return', rows[0]);
 
-            case 12:
+            case 10:
               return _context3.abrupt('return', rows);
 
-            case 13:
+            case 11:
             case 'end':
               return _context3.stop();
           }
@@ -436,7 +420,7 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee3, _this);
     }));
 
-    return function (_x8, _x9) {
+    return function (_x7, _x8) {
       return _ref3.apply(this, arguments);
     };
   }();
@@ -494,7 +478,7 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee5, _this);
     }));
 
-    return function (_x13, _x14) {
+    return function (_x12, _x13) {
       return _ref5.apply(this, arguments);
     };
   }();
@@ -525,7 +509,7 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee6, _this);
     }));
 
-    return function (_x15, _x16) {
+    return function (_x14, _x15) {
       return _ref6.apply(this, arguments);
     };
   }();
@@ -554,7 +538,7 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee7, _this);
     }));
 
-    return function (_x19, _x20) {
+    return function (_x18, _x19) {
       return _ref7.apply(this, arguments);
     };
   }();

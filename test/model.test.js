@@ -893,5 +893,15 @@ describe('Model', () => {
       expect(data[0].id).to.eql(usersNewId)
       expect(data[0].Role.id).to.eql(adminRole.id)
     })
+
+    it('builder count', async() => {
+      const builder = await Manager.build(Users).builder()
+
+      builder.count('*').where('id', '=', usersNewId)
+
+      const data = await builder.result()
+
+      expect(data).to.eql(1)
+    })
   })
 })

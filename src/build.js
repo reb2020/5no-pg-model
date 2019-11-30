@@ -103,12 +103,8 @@ class Build {
       return db
     }
 
-    _rowsHandler = async(rows, type) => {
+    _rowsHandler = async(rows) => {
       const Model = this._model
-
-      if (type === TYPE_COUNT) {
-        return rows
-      }
 
       let returnData = []
 
@@ -133,15 +129,11 @@ class Build {
     _execute = async(fields, values, type = TYPE_MANY, order = null, limit = null) => {
       const db = this._initDb(fields, values, type, order, limit)
 
-      const rows = await db.rows()
-
       if (type === TYPE_COUNT) {
-        if (rows.length === 1) {
-          return Number(rows.pop().count_rows)
-        }
-
-        return 0
+        return db.result()
       }
+
+      const rows = await db.rows()
 
       if (type === TYPE_ONE) {
         return rows[0]
