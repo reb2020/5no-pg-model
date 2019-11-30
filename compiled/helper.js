@@ -16,10 +16,11 @@ var transaction = {
   rollback: _noPgBuilder2.default.rollback
 };
 
-var getBuilder = function getBuilder(schema) {
+var getBuilder = function getBuilder(schema, handler) {
   var db = _noPgBuilder2.default.build({
     table: schema.table,
-    schema: schema.schema
+    schema: schema.schema,
+    rowsHandler: handler
   }).returning();
 
   return db;

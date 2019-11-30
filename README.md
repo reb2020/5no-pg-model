@@ -466,6 +466,19 @@ Error: [
 ```
 
 
+BUILDER 
+
+[5no-pg-builder](https://www.npmjs.com/package/5no-pg-builder)
+
+```js
+const builder = await Manager.build(Users).builder()
+
+builder.select().where('id', '=', usersNewId)
+
+const data = await builder.rows()
+```
+
+
 GET 
 
 ```js

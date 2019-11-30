@@ -28,7 +28,7 @@ class Build {
 
         if (type === TYPE_JOIN) {
           data._join = {
-            builder: getBuilder(join.model.getSchema()),
+            builder: getBuilder(join.model.getSchema(), rows => rows),
             local: join.local,
             foreign: join.foreign,
             type: join.type,
@@ -103,18 +103,11 @@ class Build {
       return db
     }
 
-    _execute = async(fields, values, type = TYPE_MANY, order = null, limit = null) => {
+    _rowsHandler = async(rows, type) => {
       const Model = this._model
-      const db = this._initDb(fields, values, type, order, limit)
-
-      const rows = await db.rows()
 
       if (type === TYPE_COUNT) {
-        if (rows.length === 1) {
-          return Number(rows.pop().count_rows)
-        }
-
-        return 0
+        return rows
       }
 
       let returnData = []
@@ -134,14 +127,30 @@ class Build {
         }
       }
 
+      return returnData
+    }
+
+    _execute = async(fields, values, type = TYPE_MANY, order = null, limit = null) => {
+      const db = this._initDb(fields, values, type, order, limit)
+
+      const rows = await db.rows()
+
+      if (type === TYPE_COUNT) {
+        if (rows.length === 1) {
+          return Number(rows.pop().count_rows)
+        }
+
+        return 0
+      }
+
       if (type === TYPE_ONE) {
-        return returnData[0]
+        return rows[0]
       } else {
-        return returnData
+        return rows
       }
     }
 
-    builder = () => getBuilder(this._schema)
+    builder = () => getBuilder(this._schema, this._rowsHandler)
 
     find = async(...values) => {
       return this._execute(this._schema.primaryKeys, values, TYPE_ONE)

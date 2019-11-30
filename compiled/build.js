@@ -72,7 +72,9 @@ var _initialiseProps = function _initialiseProps() {
 
               if (type === TYPE_JOIN) {
                 data._join = {
-                  builder: (0, _helper.getBuilder)(join.model.getSchema()),
+                  builder: (0, _helper.getBuilder)(join.model.getSchema(), function (rows) {
+                    return rows;
+                  }),
                   local: join.local,
                   foreign: join.foreign,
                   type: join.type
@@ -257,151 +259,125 @@ var _initialiseProps = function _initialiseProps() {
     return db;
   };
 
-  this._execute = function () {
-    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(fields, values) {
-      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : TYPE_MANY;
-      var order = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-      var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
-
-      var Model, db, rows, returnData, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, item, modelData;
+  this._rowsHandler = function () {
+    var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(rows, type) {
+      var Model, returnData, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, item, modelData;
 
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
               Model = _this._model;
-              db = _this._initDb(fields, values, type, order, limit);
-              _context2.next = 4;
-              return db.rows();
-
-            case 4:
-              rows = _context2.sent;
 
               if (!(type === TYPE_COUNT)) {
-                _context2.next = 9;
+                _context2.next = 3;
                 break;
               }
 
-              if (!(rows.length === 1)) {
-                _context2.next = 8;
-                break;
-              }
+              return _context2.abrupt('return', rows);
 
-              return _context2.abrupt('return', Number(rows.pop().count_rows));
-
-            case 8:
-              return _context2.abrupt('return', 0);
-
-            case 9:
+            case 3:
               returnData = [];
               _iteratorNormalCompletion4 = true;
               _didIteratorError4 = false;
               _iteratorError4 = undefined;
-              _context2.prev = 13;
+              _context2.prev = 7;
               _iterator4 = rows[Symbol.iterator]();
 
-            case 15:
+            case 9:
               if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
-                _context2.next = 38;
+                _context2.next = 32;
                 break;
               }
 
               item = _step4.value;
-              _context2.next = 19;
+              _context2.next = 13;
               return _this._relations(item);
 
-            case 19:
+            case 13:
               if (!(_this._isRelations === true)) {
-                _context2.next = 23;
+                _context2.next = 17;
                 break;
               }
 
               returnData.push(item);
-              _context2.next = 35;
+              _context2.next = 29;
               break;
 
-            case 23:
+            case 17:
               modelData = new Model();
-              _context2.next = 26;
+              _context2.next = 20;
               return modelData.setData(item);
 
-            case 26:
+            case 20:
               if (!(_this._json === true)) {
-                _context2.next = 34;
+                _context2.next = 28;
                 break;
               }
 
               _context2.t0 = returnData;
-              _context2.next = 30;
+              _context2.next = 24;
               return modelData.toJSON();
 
-            case 30:
+            case 24:
               _context2.t1 = _context2.sent;
 
               _context2.t0.push.call(_context2.t0, _context2.t1);
 
-              _context2.next = 35;
+              _context2.next = 29;
+              break;
+
+            case 28:
+              returnData.push(modelData);
+
+            case 29:
+              _iteratorNormalCompletion4 = true;
+              _context2.next = 9;
+              break;
+
+            case 32:
+              _context2.next = 38;
               break;
 
             case 34:
-              returnData.push(modelData);
-
-            case 35:
-              _iteratorNormalCompletion4 = true;
-              _context2.next = 15;
-              break;
-
-            case 38:
-              _context2.next = 44;
-              break;
-
-            case 40:
-              _context2.prev = 40;
-              _context2.t2 = _context2['catch'](13);
+              _context2.prev = 34;
+              _context2.t2 = _context2['catch'](7);
               _didIteratorError4 = true;
               _iteratorError4 = _context2.t2;
 
-            case 44:
-              _context2.prev = 44;
-              _context2.prev = 45;
+            case 38:
+              _context2.prev = 38;
+              _context2.prev = 39;
 
               if (!_iteratorNormalCompletion4 && _iterator4.return) {
                 _iterator4.return();
               }
 
-            case 47:
-              _context2.prev = 47;
+            case 41:
+              _context2.prev = 41;
 
               if (!_didIteratorError4) {
-                _context2.next = 50;
+                _context2.next = 44;
                 break;
               }
 
               throw _iteratorError4;
 
-            case 50:
-              return _context2.finish(47);
+            case 44:
+              return _context2.finish(41);
 
-            case 51:
-              return _context2.finish(44);
+            case 45:
+              return _context2.finish(38);
 
-            case 52:
-              if (!(type === TYPE_ONE)) {
-                _context2.next = 56;
-                break;
-              }
-
-              return _context2.abrupt('return', returnData[0]);
-
-            case 56:
+            case 46:
               return _context2.abrupt('return', returnData);
 
-            case 57:
+            case 47:
             case 'end':
               return _context2.stop();
           }
         }
-      }, _callee2, _this, [[13, 40, 44, 52], [45,, 47, 51]]);
+      }, _callee2, _this, [[7, 34, 38, 46], [39,, 41, 45]]);
     }));
 
     return function (_x6, _x7) {
@@ -409,23 +385,50 @@ var _initialiseProps = function _initialiseProps() {
     };
   }();
 
-  this.builder = function () {
-    return (0, _helper.getBuilder)(_this._schema);
-  };
-
-  this.find = function () {
-    var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
-      for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
-        values[_key] = arguments[_key];
-      }
-
+  this._execute = function () {
+    var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(fields, values) {
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : TYPE_MANY;
+      var order = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+      var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
+      var db, rows;
       return _regenerator2.default.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              return _context3.abrupt('return', _this._execute(_this._schema.primaryKeys, values, TYPE_ONE));
+              db = _this._initDb(fields, values, type, order, limit);
+              _context3.next = 3;
+              return db.rows();
 
-            case 1:
+            case 3:
+              rows = _context3.sent;
+
+              if (!(type === TYPE_COUNT)) {
+                _context3.next = 8;
+                break;
+              }
+
+              if (!(rows.length === 1)) {
+                _context3.next = 7;
+                break;
+              }
+
+              return _context3.abrupt('return', Number(rows.pop().count_rows));
+
+            case 7:
+              return _context3.abrupt('return', 0);
+
+            case 8:
+              if (!(type === TYPE_ONE)) {
+                _context3.next = 12;
+                break;
+              }
+
+              return _context3.abrupt('return', rows[0]);
+
+            case 12:
+              return _context3.abrupt('return', rows);
+
+            case 13:
             case 'end':
               return _context3.stop();
           }
@@ -433,28 +436,28 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee3, _this);
     }));
 
-    return function () {
+    return function (_x8, _x9) {
       return _ref3.apply(this, arguments);
     };
   }();
 
-  this.findOne = function () {
-    var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(field, value) {
+  this.builder = function () {
+    return (0, _helper.getBuilder)(_this._schema, _this._rowsHandler);
+  };
+
+  this.find = function () {
+    var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4() {
+      for (var _len = arguments.length, values = Array(_len), _key = 0; _key < _len; _key++) {
+        values[_key] = arguments[_key];
+      }
+
       return _regenerator2.default.wrap(function _callee4$(_context4) {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              if (!((0, _helper.getTypeOfValue)(field) === 'array')) {
-                _context4.next = 2;
-                break;
-              }
+              return _context4.abrupt('return', _this._execute(_this._schema.primaryKeys, values, TYPE_ONE));
 
-              return _context4.abrupt('return', _this._execute(field, value, TYPE_ONE));
-
-            case 2:
-              return _context4.abrupt('return', _this._execute([field], [value], TYPE_ONE));
-
-            case 3:
+            case 1:
             case 'end':
               return _context4.stop();
           }
@@ -462,15 +465,13 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee4, _this);
     }));
 
-    return function (_x11, _x12) {
+    return function () {
       return _ref4.apply(this, arguments);
     };
   }();
 
-  this.findAll = function () {
+  this.findOne = function () {
     var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(field, value) {
-      var order = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-      var limit = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
       return _regenerator2.default.wrap(function _callee5$(_context5) {
         while (1) {
           switch (_context5.prev = _context5.next) {
@@ -480,10 +481,10 @@ var _initialiseProps = function _initialiseProps() {
                 break;
               }
 
-              return _context5.abrupt('return', _this._execute(field, value, TYPE_MANY, order, limit));
+              return _context5.abrupt('return', _this._execute(field, value, TYPE_ONE));
 
             case 2:
-              return _context5.abrupt('return', _this._execute([field], [value], TYPE_MANY, order, limit));
+              return _context5.abrupt('return', _this._execute([field], [value], TYPE_ONE));
 
             case 3:
             case 'end':
@@ -498,8 +499,10 @@ var _initialiseProps = function _initialiseProps() {
     };
   }();
 
-  this.count = function () {
+  this.findAll = function () {
     var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(field, value) {
+      var order = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+      var limit = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
       return _regenerator2.default.wrap(function _callee6$(_context6) {
         while (1) {
           switch (_context6.prev = _context6.next) {
@@ -509,10 +512,10 @@ var _initialiseProps = function _initialiseProps() {
                 break;
               }
 
-              return _context6.abrupt('return', _this._execute(field, value, TYPE_COUNT));
+              return _context6.abrupt('return', _this._execute(field, value, TYPE_MANY, order, limit));
 
             case 2:
-              return _context6.abrupt('return', _this._execute([field], [value], TYPE_COUNT));
+              return _context6.abrupt('return', _this._execute([field], [value], TYPE_MANY, order, limit));
 
             case 3:
             case 'end':
@@ -522,8 +525,37 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee6, _this);
     }));
 
-    return function (_x17, _x18) {
+    return function (_x15, _x16) {
       return _ref6.apply(this, arguments);
+    };
+  }();
+
+  this.count = function () {
+    var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(field, value) {
+      return _regenerator2.default.wrap(function _callee7$(_context7) {
+        while (1) {
+          switch (_context7.prev = _context7.next) {
+            case 0:
+              if (!((0, _helper.getTypeOfValue)(field) === 'array')) {
+                _context7.next = 2;
+                break;
+              }
+
+              return _context7.abrupt('return', _this._execute(field, value, TYPE_COUNT));
+
+            case 2:
+              return _context7.abrupt('return', _this._execute([field], [value], TYPE_COUNT));
+
+            case 3:
+            case 'end':
+              return _context7.stop();
+          }
+        }
+      }, _callee7, _this);
+    }));
+
+    return function (_x19, _x20) {
+      return _ref7.apply(this, arguments);
     };
   }();
 };

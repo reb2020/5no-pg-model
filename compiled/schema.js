@@ -109,7 +109,9 @@ var _initialiseProps = function _initialiseProps() {
   };
 
   this.getBuilder = function () {
-    var db = (0, _helper.getBuilder)(_this);
+    var db = (0, _helper.getBuilder)(_this, function (rows) {
+      return rows;
+    });
 
     if (_this.isUpdatable()) {
       var _iteratorNormalCompletion2 = true;

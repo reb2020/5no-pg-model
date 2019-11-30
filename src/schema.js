@@ -58,7 +58,7 @@ class ModelSchema {
   }
 
   getBuilder = () => {
-    const db = getBuilder(this)
+    const db = getBuilder(this, rows => rows)
 
     if (this.isUpdatable()) {
       for (let primaryKey of this.primaryKeys) {

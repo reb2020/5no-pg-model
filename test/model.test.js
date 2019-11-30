@@ -891,6 +891,7 @@ describe('Model', () => {
       const data = await builder.rows()
 
       expect(data[0].id).to.eql(usersNewId)
+      expect(data[0].Role.id).to.eql(adminRole.id)
     })
   })
 })

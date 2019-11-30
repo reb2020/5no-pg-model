@@ -6,11 +6,12 @@ const transaction = {
   rollback: Builder.rollback,
 }
 
-const getBuilder = (schema) => {
+const getBuilder = (schema, handler) => {
   const db = Builder.build(
     {
       table: schema.table,
       schema: schema.schema,
+      rowsHandler: handler,
     }
   ).returning()
 
