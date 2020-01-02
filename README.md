@@ -19,6 +19,8 @@ DATABASE_QUERY_LOG=true
 
 ## Schema
 
+[@5no/schema](https://www.npmjs.com/package/@5no/schema)
+
 ```js
     {
       table: {
@@ -80,7 +82,7 @@ async toJSON() // Return to JSON format
 
 ## Manager.build(model, json = false) 
 
-Builder uses [5no-pg-builder](https://www.npmjs.com/package/5no-pg-builder)
+Builder uses [@5no/pg-builder](https://www.npmjs.com/package/@5no/pg-builder)
 
 ```js
 builder() // get a Builder for customing query
@@ -470,7 +472,7 @@ Error: [
 
 BUILDER 
 
-[5no-pg-builder](https://www.npmjs.com/package/5no-pg-builder)
+[@5no/pg-builder](https://www.npmjs.com/package/@5no/pg-builder)
 
 ```js
 const builder = await Manager.build(Users).builder()
