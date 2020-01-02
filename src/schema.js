@@ -1,4 +1,4 @@
-import Schema from '5no-schema'
+import Schema from '@5no/schema'
 
 import {modelSchemaFormater, modelSchemaRelationsFormater, getBuilder, getTypeOfValue} from './helper'
 

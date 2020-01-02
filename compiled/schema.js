@@ -12,9 +12,9 @@ var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
-var _noSchema = require('5no-schema');
+var _schema = require('@5no/schema');
 
-var _noSchema2 = _interopRequireDefault(_noSchema);
+var _schema2 = _interopRequireDefault(_schema);
 
 var _helper = require('./helper');
 
@@ -32,7 +32,7 @@ var ModelSchema = function ModelSchema(data) {
 
   var modelSchemaFormat = (0, _helper.modelSchemaFormater)(columns);
 
-  var schema = new _noSchema2.default(modelSchemaFormat.returnFormat);
+  var schema = new _schema2.default(modelSchemaFormat.returnFormat);
 
   this.table = table.name;
   this.schema = table.schema || 'public';

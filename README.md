@@ -1,11 +1,13 @@
+# <a href='https://5no.io'><img src='https://5no.io/img/5no-small-logo.png' height='100' alt='5no Logo' aria-label='5no.io' /></a>PG ORM
+
 JS ORM for PostgreSQL
 
 ## Install
 
-5no-pg-model requires Node version 8 or above.
+@5no/pg-model requires Node version 8 or above.
 
 ```sh
-npm install --save 5no-pg-model
+npm install --save @5no/pg-model
 ```
 
 ## .env
@@ -107,7 +109,7 @@ fetchOne(field | [...fields], value | [...values]) // get row by filter if type 
 ## Examples
 
 ```js
-const { Manager, Model } = require('5no-pg-model')
+const { Manager, Model } = require('@5no/pg-model')
 
 
 class Roles extends Model {

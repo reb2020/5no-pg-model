@@ -1,4 +1,4 @@
-import Builder from '5no-pg-builder'
+import Builder from '@5no/pg-builder'
 
 const transaction = {
   begin: Builder.begin,

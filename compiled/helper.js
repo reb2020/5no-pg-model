@@ -4,20 +4,20 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _noPgBuilder = require('5no-pg-builder');
+var _pgBuilder = require('@5no/pg-builder');
 
-var _noPgBuilder2 = _interopRequireDefault(_noPgBuilder);
+var _pgBuilder2 = _interopRequireDefault(_pgBuilder);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var transaction = {
-  begin: _noPgBuilder2.default.begin,
-  commit: _noPgBuilder2.default.commit,
-  rollback: _noPgBuilder2.default.rollback
+  begin: _pgBuilder2.default.begin,
+  commit: _pgBuilder2.default.commit,
+  rollback: _pgBuilder2.default.rollback
 };
 
 var getBuilder = function getBuilder(schema, handler) {
-  var db = _noPgBuilder2.default.build({
+  var db = _pgBuilder2.default.build({
     table: schema.table,
     schema: schema.schema,
     rowsHandler: handler
