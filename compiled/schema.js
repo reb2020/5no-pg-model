@@ -12,6 +12,10 @@ var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _schema = require('@5no/schema');
 
 var _schema2 = _interopRequireDefault(_schema);
@@ -94,7 +98,7 @@ var _initialiseProps = function _initialiseProps() {
   this.addUpdatableFields = function (data, change) {
     var allSave = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-    var nowDate = new Date();
+    var nowDate = _moment2.default.utc();
     var returnData = {};
 
     if (_this.createdField && !_this.isUpdatable()) {

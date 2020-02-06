@@ -1,3 +1,4 @@
+import moment from 'moment'
 import Schema from '@5no/schema'
 
 import {modelSchemaFormater, modelSchemaRelationsFormater, getBuilder, getTypeOfValue} from './helper'
@@ -43,7 +44,7 @@ class ModelSchema {
   }
 
   addUpdatableFields = (data, change, allSave = false) => {
-    const nowDate = new Date()
+    const nowDate = moment.utc()
     let returnData = {}
 
     if (this.createdField && !this.isUpdatable()) {
