@@ -49,6 +49,7 @@ var getTypeOfValue = function getTypeOfValue(value) {
 
 var modelSchemaFormater = function modelSchemaFormater(columns) {
   var returnFormat = {};
+  var returnFunctionFormat = {};
   var primaryKeyFields = [];
   var createdField = null;
   var updatedField = null;
@@ -63,6 +64,7 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
         validators = _columns$field.validators,
         primaryKey = _columns$field.primaryKey,
         format = _columns$field.format,
+        fn = _columns$field.fn,
         created = _columns$field.created,
         updated = _columns$field.updated;
 
@@ -79,19 +81,29 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
       updatedField = field;
     }
 
-    returnFormat[field] = {
-      type: type,
-      defaultValue: defaultValue,
-      schema: schema,
-      format: format,
-      prefilled: prefilled || false,
-      required: required || false,
-      filters: filters || [],
-      validators: validators || []
-    };
+    if (getTypeName(type) === 'function') {
+      returnFunctionFormat[field] = fn;
+    } else {
+      returnFormat[field] = {
+        type: type,
+        defaultValue: defaultValue,
+        schema: schema,
+        format: format,
+        prefilled: prefilled || false,
+        required: required || false,
+        filters: filters || [],
+        validators: validators || []
+      };
+    }
   });
 
-  return { primaryKeyFields: primaryKeyFields, createdField: createdField, updatedField: updatedField, returnFormat: returnFormat };
+  return {
+    primaryKeyFields: primaryKeyFields,
+    createdField: createdField,
+    updatedField: updatedField,
+    returnFormat: returnFormat,
+    returnFunctionFormat: returnFunctionFormat
+  };
 };
 
 var modelSchemaRelationsFormater = function modelSchemaRelationsFormater(relations) {
@@ -128,6 +140,12 @@ var errors = function errors(_errors) {
   return { error: typeof _errors.message !== 'undefined' ? _errors.message : _errors };
 };
 
+var resolveFn = function resolveFn(fn, model) {
+  return new Promise(function (resolve, reject) {
+    return Promise.resolve(fn(model)).then(resolve).catch(reject);
+  });
+};
+
 module.exports = {
   errors: errors,
   getBuilder: getBuilder,
@@ -135,5 +153,6 @@ module.exports = {
   getTypeOfValue: getTypeOfValue,
   modelSchemaFormater: modelSchemaFormater,
   modelSchemaRelationsFormater: modelSchemaRelationsFormater,
+  resolveFn: resolveFn,
   transaction: transaction
 };

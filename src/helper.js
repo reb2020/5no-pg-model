@@ -41,11 +41,12 @@ const getTypeOfValue = (value) => {
 
 const modelSchemaFormater = (columns) => {
   let returnFormat = {}
+  let returnFunctionFormat = {}
   let primaryKeyFields = []
   let createdField = null
   let updatedField = null
   Object.keys(columns).forEach((field) => {
-    const { type, defaultValue, required, prefilled, schema, filters, validators, primaryKey, format, created, updated } = columns[field]
+    const { type, defaultValue, required, prefilled, schema, filters, validators, primaryKey, format, fn, created, updated } = columns[field]
 
     if (primaryKey) {
       primaryKeyFields.push(field)
@@ -59,19 +60,29 @@ const modelSchemaFormater = (columns) => {
       updatedField = field
     }
 
-    returnFormat[field] = {
-      type: type,
-      defaultValue: defaultValue,
-      schema: schema,
-      format: format,
-      prefilled: prefilled || false,
-      required: required || false,
-      filters: filters || [],
-      validators: validators || [],
+    if (getTypeName(type) === 'function') {
+      returnFunctionFormat[field] = fn
+    } else {
+      returnFormat[field] = {
+        type: type,
+        defaultValue: defaultValue,
+        schema: schema,
+        format: format,
+        prefilled: prefilled || false,
+        required: required || false,
+        filters: filters || [],
+        validators: validators || [],
+      }
     }
   })
 
-  return {primaryKeyFields: primaryKeyFields, createdField: createdField, updatedField: updatedField, returnFormat: returnFormat}
+  return {
+    primaryKeyFields: primaryKeyFields,
+    createdField: createdField,
+    updatedField: updatedField,
+    returnFormat: returnFormat,
+    returnFunctionFormat: returnFunctionFormat,
+  }
 }
 
 const modelSchemaRelationsFormater = (relations) => {
@@ -101,6 +112,10 @@ const errors = (errors) => {
   return { error: typeof errors.message !== 'undefined' ? errors.message : errors }
 }
 
+const resolveFn = (fn, model) => new Promise((resolve, reject) => {
+  return Promise.resolve(fn(model)).then(resolve).catch(reject)
+})
+
 module.exports = {
   errors,
   getBuilder,
@@ -108,5 +123,6 @@ module.exports = {
   getTypeOfValue,
   modelSchemaFormater,
   modelSchemaRelationsFormater,
+  resolveFn,
   transaction,
 }

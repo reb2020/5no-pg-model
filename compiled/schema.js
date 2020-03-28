@@ -48,6 +48,7 @@ var ModelSchema = function ModelSchema(data) {
   this.columns = schema.fields;
   this.filter = schema.filter;
   this.validate = schema.validate;
+  this.functionFields = modelSchemaFormat.returnFunctionFormat;
   this.relations = (0, _helper.modelSchemaRelationsFormater)(relations);
 };
 

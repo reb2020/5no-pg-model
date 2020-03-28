@@ -1,7 +1,7 @@
 import ModelSchema from './schema'
 import Many from './many'
 import Join from './join'
-import { errors, getTypeOfValue, transaction } from './helper'
+import { errors, getTypeOfValue, transaction, resolveFn } from './helper'
 import { modelJoin, initJoin, joinData } from './joinHelper'
 
 class Model {
@@ -10,6 +10,7 @@ class Model {
     _parent = null
     _schema = null
     _data = {}
+    _functionData = {}
     _change = {}
     _joinName = null
     _joinSchema = null
@@ -40,6 +41,12 @@ class Model {
             }
             return this._data[column]
           },
+        })
+      })
+
+      Object.keys(this._schema.functionFields).forEach((column) => {
+        Object.defineProperty(this, column, {
+          get: () => this._functionData[column] || null,
         })
       })
 
@@ -105,6 +112,10 @@ class Model {
           this._data[name] = new RelationModel()
           await this._data[name].setData(data[name])
         }
+      }
+
+      for (let functionFieldKey of Object.keys(this._schema.functionFields)) {
+        this._functionData[functionFieldKey] = await resolveFn(this._schema.functionFields[functionFieldKey], this)
       }
     }
 

@@ -205,6 +205,10 @@ class Users extends Model {
             test: 100,
           },
         },
+        countRoles: {
+          type: Function,
+          fn: (model) => Manager.build(UserRoles).count('user_id', model.id),
+        },
         properties: {
           type: Array,
           defaultValue: [],
@@ -697,6 +701,12 @@ describe('Model', () => {
       expect(returnData).to.eql(true)
       expect(data.Role.id).to.eql(adminRole.id)
       expect(data.Roles.length).to.eql(2)
+    })
+
+    it('function column', async() => {
+      const data = await Manager.build(Users).find(usersNewId)
+
+      expect(data.countRoles).to.eql(2)
     })
 
     it('create duplicate', async() => {

@@ -21,6 +21,7 @@ class ModelSchema {
     this.columns = schema.fields
     this.filter = schema.filter
     this.validate = schema.validate
+    this.functionFields = modelSchemaFormat.returnFunctionFormat
     this.relations = modelSchemaRelationsFormater(relations)
   }
 

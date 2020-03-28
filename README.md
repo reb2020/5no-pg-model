@@ -29,12 +29,13 @@ DATABASE_QUERY_LOG=true
       },
       columns: { // describe columns 
         [name]: { // column name
-          type: String, // String, Number, Boolean, Date, Object, Array
+          type: String, // String, Number, Boolean, Date, Object, Array, Function
           primaryKey: true, // only for primaryKey
           defaultValue: null, // default value
           required: true, // validate values
           prefilled: true, // filling field by default
           schema: {}, // Can describe object schema
+          fn: () => null, // Describe a function for function type
         },
         [name]: { // Auto filling column name
           type: Date,
@@ -349,6 +350,10 @@ class Users extends Model {
             },
           },
         },
+        countRoles: {
+          type: Function,
+          fn: (model) => Manager.build(UserRoles).count('user_id', model.id),
+        },
         created_at: {
           type: Date,
           created: true,
@@ -497,6 +502,7 @@ return
   secret_key: 'test_333',
   email: 'test@test.me',
   public_key: 'test_123',
+  countRoles: 1,
   created_at: '2018-12-20 17:10:31',
   updated_at: '2018-12-20 17:10:31',
   personalised: {
