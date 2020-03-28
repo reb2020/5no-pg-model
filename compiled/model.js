@@ -938,7 +938,7 @@ var Model = function () {
     Object.keys(this._schema.functionFields).forEach(function (column) {
       Object.defineProperty(_this, column, {
         get: function get() {
-          return _this._functionData[column] || null;
+          return _this._functionData[column];
         }
       });
     });

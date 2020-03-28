@@ -46,7 +46,7 @@ class Model {
 
       Object.keys(this._schema.functionFields).forEach((column) => {
         Object.defineProperty(this, column, {
-          get: () => this._functionData[column] || null,
+          get: () => this._functionData[column],
         })
       })
 
