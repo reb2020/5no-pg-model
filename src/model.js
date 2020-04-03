@@ -10,7 +10,6 @@ class Model {
     _parent = null
     _schema = null
     _data = {}
-    _functionData = {}
     _change = {}
     _joinName = null
     _joinSchema = null
@@ -30,23 +29,23 @@ class Model {
         Object.defineProperty(this, column, {
           set: (v) => {
             if (this._schema.primaryKeys.includes(column)) {
-              this._schema.primaryKeysValue[column] = v
+              this._schema.primaryKeysValue[column] = this.set(column, v)
             } else {
-              this._data[column] = this._change[column] = v
+              this._data[column] = this._change[column] = this.set(column, v)
             }
           },
           get: () => {
             if (this._schema.primaryKeys.includes(column)) {
-              return this._schema.primaryKeysValue[column] || this._schema.columns[column]
+              return this.get(column, this._schema.primaryKeysValue[column] || this._schema.columns[column])
             }
-            return this._data[column]
+            return this.get(column, this._data[column])
           },
         })
       })
 
       Object.keys(this._schema.functionFields).forEach((column) => {
         Object.defineProperty(this, column, {
-          get: () => this._functionData[column],
+          get: () => this.get(column, this._data[column]),
         })
       })
 
@@ -75,7 +74,11 @@ class Model {
       return new ModelSchema(this.schema)
     }
 
-    setData = async(data) => {
+    set = (name, value) => value
+
+    get = (name, value) => value
+
+    setJSON = async(data) => {
       const filterData = await this._schema.filter(data)
       Object.keys(filterData).forEach((key) => {
         if (this._schema.primaryKeys.includes(key)) {
@@ -90,7 +93,7 @@ class Model {
         const typeOfValue = getTypeOfValue(data[name])
 
         if (typeof this._data[name] !== 'undefined' && type === 'one' && typeOfValue === 'object') {
-          await this._data[name].setData(data[name])
+          await this._data[name].setJSON(data[name])
         } else if (type === 'many' && typeOfValue === 'array') {
           this._data[name] = new Many(RelationModel)
           for (let item of data[name]) {
@@ -110,21 +113,57 @@ class Model {
           this._data[name] = await modelJoin(name, RelationModel, join, joinItemData, null)
         } else if (type === 'one' && typeOfValue === 'object') {
           this._data[name] = new RelationModel()
-          await this._data[name].setData(data[name])
+          await this._data[name].setJSON(data[name])
         }
       }
+    }
 
+    _prepareFunctionFields = async() => {
       for (let functionFieldKey of Object.keys(this._schema.functionFields)) {
-        this._functionData[functionFieldKey] = await resolveFn(this._schema.functionFields[functionFieldKey], this)
+        this._data[functionFieldKey] = await resolveFn(this._schema.functionFields[functionFieldKey], this)
       }
+
+      await this._schema.cascadeFunctionExecute(this._data)
     }
 
-    getData = async(allSave = false) => {
-      return this._schema.filter(this._schema.addUpdatableFields(this._data, this._change, allSave))
+    _prepareData = async({ allSave = false, json = false }) => {
+      return new Promise((resolve, reject) => {
+        this._schema.filter(this._schema.addUpdatableFields(this._data, this._change, allSave)).then(data => {
+          if (json === true) {
+            for (let functionFieldKey of Object.keys(this._schema.functionFields)) {
+              data[functionFieldKey] = this._data[functionFieldKey]
+            }
+
+            if (this._schema.primaryKeys.length) {
+              for (let primaryKey of this._schema.primaryKeys) {
+                data[primaryKey] = this._schema.primaryKeysValue[primaryKey]
+              }
+            }
+
+            data = Object.keys(data).sort((a, b) => {
+              const indexA = this._schema.sortFields.indexOf(a)
+              const indexB = this._schema.sortFields.indexOf(b)
+
+              if (indexA > indexB) {
+                return 1
+              } else if (indexA > indexB) {
+                return -1
+              }
+
+              return 0
+            }).reduce((acc, key) => {
+              acc[key] = data[key]
+              return acc
+            }, {})
+          }
+
+          resolve(data)
+        }).catch(reject)
+      })
     }
 
-    saveByData = async(data) => {
-      await this.setData(data)
+    saveByJSON = async(data) => {
+      await this.setJSON(data)
       return this.save(true, true)
     }
 
@@ -133,17 +172,17 @@ class Model {
       let dataJoin = Object.assign({}, newData)
       dataJoin[this._joinSchema.local] = newData[this._joinSchema.foreign]
 
-      await this._joinModel.setData(dataJoin)
-      await this.setData(newData)
+      await this._joinModel.setJSON(dataJoin)
+      await this.setJSON(newData)
     }
 
-    save = async(transactionMode = true, allSave = false) => {
+    _save = async(transactionMode = true, allSave = false) => {
       if (this._joinModel) {
-        return this._joinModel.save(transactionMode)
+        return this._joinModel._save(transactionMode)
       }
       try {
         const db = this._schema.getBuilder()
-        const dataAfterFilter = await this.getData(allSave)
+        const dataAfterFilter = await this._prepareData({ allSave })
         const data = await this._schema.validate(dataAfterFilter)
 
         const change = Object.keys(allSave === true ? data : this._change)
@@ -175,7 +214,7 @@ class Model {
 
         if (isFeasible) {
           const rows = await db.rows()
-          await this.setData(rows[0])
+          await this.setJSON(rows[0])
         }
 
         await this._schema.saveCascade(this._data, allSave)
@@ -187,6 +226,14 @@ class Model {
         if (transactionMode) await transaction.rollback()
         return errors(e)
       }
+    }
+
+    save = async(transactionMode = true, allSave = false) => {
+      const result = await this._save(transactionMode, allSave)
+
+      await this._prepareFunctionFields()
+
+      return result
     }
 
     delete = async(transactionMode = true) => {
@@ -233,22 +280,17 @@ class Model {
         }
       })
 
+      Object.keys(this._schema.functionFields).forEach((column) => {
+        this._data[column] = null
+      })
+
       this._schema.setPrimaryKeysValues({})
 
       this._change = {}
     }
 
     toJSON = async() => {
-      let dataJSON = {}
-
-      if (this._schema.primaryKeys.length) {
-        for (let primaryKey of this._schema.primaryKeys) {
-          dataJSON[primaryKey] = this._schema.primaryKeysValue[primaryKey]
-        }
-      }
-
-      const dataAfterFilter = await this.getData()
-      dataJSON = Object.assign(dataJSON, dataAfterFilter)
+      let dataJSON = await this._prepareData({ json: true })
 
       for (let relationData of this._schema.relations) {
         const {name} = relationData

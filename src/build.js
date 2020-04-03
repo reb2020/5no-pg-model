@@ -114,7 +114,8 @@ class Build {
           returnData.push(item)
         } else {
           let modelData = new Model()
-          await modelData.setData(item)
+          await modelData.setJSON(item)
+          await modelData._prepareFunctionFields()
           if (this._json === true) {
             returnData.push(await modelData.toJSON())
           } else {

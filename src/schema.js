@@ -22,6 +22,7 @@ class ModelSchema {
     this.filter = schema.filter
     this.validate = schema.validate
     this.functionFields = modelSchemaFormat.returnFunctionFormat
+    this.sortFields = modelSchemaFormat.sortFields
     this.relations = modelSchemaRelationsFormater(relations)
   }
 
@@ -119,7 +120,7 @@ class ModelSchema {
             }
             let result = null
             if (method === 'save') {
-              result = await item.save(false, allSave)
+              result = await item._save(false, allSave)
             } else if (method === 'delete') {
               result = await item.delete(false)
             }
@@ -138,7 +139,7 @@ class ModelSchema {
           }
           let result = null
           if (method === 'save') {
-            result = await data[name].save(false, allSave)
+            result = await data[name]._save(false, allSave)
           } else if (method === 'delete') {
             result = await data[name].delete(false)
           }
@@ -146,6 +147,29 @@ class ModelSchema {
             throw result
           }
         }
+      }
+    }
+  }
+
+  cascadeFunctionExecute = async(data) => {
+    for (let relationData of this.relations) {
+      const {name} = relationData
+      const type = getTypeOfValue(data[name])
+
+      if (type === 'undefined') {
+        continue
+      }
+
+      if (type === 'many' || type === 'join') {
+        for (let item of data[name]) {
+          if (type === 'join') {
+            await item._joinModel._prepareFunctionFields()
+          } else {
+            await item._prepareFunctionFields()
+          }
+        }
+      } else {
+        await data[name]._prepareFunctionFields()
       }
     }
   }

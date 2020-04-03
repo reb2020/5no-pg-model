@@ -60,7 +60,7 @@ var Many = function (_Array) {
 
                 newRelationModel._parent = this;
                 _context.next = 5;
-                return newRelationModel.setData(data);
+                return newRelationModel.setJSON(data);
 
               case 5:
                 this.push(newRelationModel);

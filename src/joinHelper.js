@@ -34,9 +34,9 @@ const modelJoin = async(name, RelationModel, join, data, parent) => {
   let newDataJoin = Object.assign({}, dataJoin)
   newDataJoin[join.local] = dataJoin[join.foreign]
 
-  await InitModelJoin._joinModel.setData(newDataJoin)
+  await InitModelJoin._joinModel.setJSON(newDataJoin)
 
-  await InitModelJoin.setData(dataJoin)
+  await InitModelJoin.setJSON(dataJoin)
 
   return InitModelJoin
 }

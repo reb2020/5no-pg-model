@@ -53,6 +53,7 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
   var primaryKeyFields = [];
   var createdField = null;
   var updatedField = null;
+  var sortFields = [];
   Object.keys(columns).forEach(function (field) {
     var _columns$field = columns[field],
         type = _columns$field.type,
@@ -68,6 +69,8 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
         created = _columns$field.created,
         updated = _columns$field.updated;
 
+
+    sortFields.push(field);
 
     if (primaryKey) {
       primaryKeyFields.push(field);
@@ -102,7 +105,8 @@ var modelSchemaFormater = function modelSchemaFormater(columns) {
     createdField: createdField,
     updatedField: updatedField,
     returnFormat: returnFormat,
-    returnFunctionFormat: returnFunctionFormat
+    returnFunctionFormat: returnFunctionFormat,
+    sortFields: sortFields
   };
 };
 

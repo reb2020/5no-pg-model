@@ -1,6 +1,6 @@
-# <a href='https://5no.io'><img src='https://5no.io/img/5no-small-logo.png' height='100' alt='5no Logo' aria-label='5no.io' /></a>PG ORM
+# <a href='https://5no.io'><img src='https://5no.io/img/5no-small-logo.png' height='100' alt='5no Logo' aria-label='5no.io' /></a>Node.js ORM for Postgres
 
-JS ORM for PostgreSQL
+Node.js ORM for Postgres
 
 ## Install
 
@@ -72,10 +72,12 @@ DATABASE_QUERY_LOG=true
 ## Model Methods
 
 ```js
-async save(transactionMode = true, allSave = false) // Save changes
-async join(data) // set changes by Json data
-async setData(data) // set changes by Json data
-async saveByData(data) // Save changes by Json data
+async set(name, value) // setter value
+async get(name, value) // getter value
+async save(transactionMode = true, allSave = false) // save changes
+async join(data) // join another model
+async setJSON(data) // set changes by JSON
+async saveByJSON(data) // Save changes by JSON
 async delete() // Delete entries
 async toJSON() // Return to JSON format
 ```
@@ -352,7 +354,7 @@ class Users extends Model {
         },
         countRoles: {
           type: Function,
-          fn: (model) => Manager.build(UserRoles).count('user_id', model.id),
+          fn: (model) => model.getCountRoles(),
         },
         created_at: {
           type: Date,
@@ -420,6 +422,8 @@ class Users extends Model {
         },
       },
     }
+
+    getCountRoles = () => Manager.build(UserRoles).count('user_id', this.id)
 }
 ```
 
@@ -569,7 +573,7 @@ await data.save()
 ```
 
 
-SAVE BY DATA
+SAVE BY JSON
 
 ```js
 const testNewUser = new Users()
@@ -584,10 +588,11 @@ const newData = {
         Addresses: [{
           street_name: 'Test 100',
           postcode: '100501',
-        }]
+        }],
+        Roles: [ await adminRole.toJSON() ],
 }
 
-const returnData = await testNewUser.saveByData(newData)
+const returnData = await testNewUser.saveByJSON(newData)
 
 ```
 

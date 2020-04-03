@@ -49,6 +49,7 @@ var ModelSchema = function ModelSchema(data) {
   this.filter = schema.filter;
   this.validate = schema.validate;
   this.functionFields = modelSchemaFormat.returnFunctionFormat;
+  this.sortFields = modelSchemaFormat.sortFields;
   this.relations = (0, _helper.modelSchemaRelationsFormater)(relations);
 };
 
@@ -270,7 +271,7 @@ var _initialiseProps = function _initialiseProps() {
               }
 
               _context.next = 27;
-              return item.save(false, allSave);
+              return item._save(false, allSave);
 
             case 27:
               result = _context.sent;
@@ -357,7 +358,7 @@ var _initialiseProps = function _initialiseProps() {
               }
 
               _context.next = 60;
-              return data[name].save(false, allSave);
+              return data[name]._save(false, allSave);
 
             case 60:
               _result = _context.sent;
@@ -436,22 +437,165 @@ var _initialiseProps = function _initialiseProps() {
     };
   }();
 
-  this.saveCascade = function () {
+  this.cascadeFunctionExecute = function () {
     var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(data) {
-      var allSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var _iteratorNormalCompletion6, _didIteratorError6, _iteratorError6, _iterator6, _step6, relationData, name, type, _iteratorNormalCompletion7, _didIteratorError7, _iteratorError7, _iterator7, _step7, item;
+
       return _regenerator2.default.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              _context2.next = 2;
-              return _this.cascadeExecute('save', data, allSave);
+              _iteratorNormalCompletion6 = true;
+              _didIteratorError6 = false;
+              _iteratorError6 = undefined;
+              _context2.prev = 3;
+              _iterator6 = _this.relations[Symbol.iterator]();
 
-            case 2:
+            case 5:
+              if (_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done) {
+                _context2.next = 50;
+                break;
+              }
+
+              relationData = _step6.value;
+              name = relationData.name;
+              type = (0, _helper.getTypeOfValue)(data[name]);
+
+              if (!(type === 'undefined')) {
+                _context2.next = 11;
+                break;
+              }
+
+              return _context2.abrupt('continue', 47);
+
+            case 11:
+              if (!(type === 'many' || type === 'join')) {
+                _context2.next = 45;
+                break;
+              }
+
+              _iteratorNormalCompletion7 = true;
+              _didIteratorError7 = false;
+              _iteratorError7 = undefined;
+              _context2.prev = 15;
+              _iterator7 = data[name][Symbol.iterator]();
+
+            case 17:
+              if (_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done) {
+                _context2.next = 29;
+                break;
+              }
+
+              item = _step7.value;
+
+              if (!(type === 'join')) {
+                _context2.next = 24;
+                break;
+              }
+
+              _context2.next = 22;
+              return item._joinModel._prepareFunctionFields();
+
+            case 22:
+              _context2.next = 26;
+              break;
+
+            case 24:
+              _context2.next = 26;
+              return item._prepareFunctionFields();
+
+            case 26:
+              _iteratorNormalCompletion7 = true;
+              _context2.next = 17;
+              break;
+
+            case 29:
+              _context2.next = 35;
+              break;
+
+            case 31:
+              _context2.prev = 31;
+              _context2.t0 = _context2['catch'](15);
+              _didIteratorError7 = true;
+              _iteratorError7 = _context2.t0;
+
+            case 35:
+              _context2.prev = 35;
+              _context2.prev = 36;
+
+              if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                _iterator7.return();
+              }
+
+            case 38:
+              _context2.prev = 38;
+
+              if (!_didIteratorError7) {
+                _context2.next = 41;
+                break;
+              }
+
+              throw _iteratorError7;
+
+            case 41:
+              return _context2.finish(38);
+
+            case 42:
+              return _context2.finish(35);
+
+            case 43:
+              _context2.next = 47;
+              break;
+
+            case 45:
+              _context2.next = 47;
+              return data[name]._prepareFunctionFields();
+
+            case 47:
+              _iteratorNormalCompletion6 = true;
+              _context2.next = 5;
+              break;
+
+            case 50:
+              _context2.next = 56;
+              break;
+
+            case 52:
+              _context2.prev = 52;
+              _context2.t1 = _context2['catch'](3);
+              _didIteratorError6 = true;
+              _iteratorError6 = _context2.t1;
+
+            case 56:
+              _context2.prev = 56;
+              _context2.prev = 57;
+
+              if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                _iterator6.return();
+              }
+
+            case 59:
+              _context2.prev = 59;
+
+              if (!_didIteratorError6) {
+                _context2.next = 62;
+                break;
+              }
+
+              throw _iteratorError6;
+
+            case 62:
+              return _context2.finish(59);
+
+            case 63:
+              return _context2.finish(56);
+
+            case 64:
             case 'end':
               return _context2.stop();
           }
         }
-      }, _callee2, _this);
+      }, _callee2, _this, [[3, 52, 56, 64], [15, 31, 35, 43], [36,, 38, 42], [57,, 59, 63]]);
     }));
 
     return function (_x5) {
@@ -459,14 +603,15 @@ var _initialiseProps = function _initialiseProps() {
     };
   }();
 
-  this.deleteCascade = function () {
+  this.saveCascade = function () {
     var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(data) {
+      var allSave = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       return _regenerator2.default.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return _this.cascadeExecute('delete', data);
+              return _this.cascadeExecute('save', data, allSave);
 
             case 2:
             case 'end':
@@ -476,8 +621,30 @@ var _initialiseProps = function _initialiseProps() {
       }, _callee3, _this);
     }));
 
-    return function (_x7) {
+    return function (_x6) {
       return _ref3.apply(this, arguments);
+    };
+  }();
+
+  this.deleteCascade = function () {
+    var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(data) {
+      return _regenerator2.default.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return _this.cascadeExecute('delete', data);
+
+            case 2:
+            case 'end':
+              return _context4.stop();
+          }
+        }
+      }, _callee4, _this);
+    }));
+
+    return function (_x8) {
+      return _ref4.apply(this, arguments);
     };
   }();
 };

@@ -104,11 +104,11 @@ var modelJoin = function () {
             newDataJoin[join.local] = dataJoin[join.foreign];
 
             _context2.next = 8;
-            return InitModelJoin._joinModel.setData(newDataJoin);
+            return InitModelJoin._joinModel.setJSON(newDataJoin);
 
           case 8:
             _context2.next = 10;
-            return InitModelJoin.setData(dataJoin);
+            return InitModelJoin.setJSON(dataJoin);
 
           case 10:
             return _context2.abrupt('return', InitModelJoin);

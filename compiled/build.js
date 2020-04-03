@@ -277,7 +277,7 @@ var _initialiseProps = function _initialiseProps() {
 
             case 7:
               if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
-                _context2.next = 30;
+                _context2.next = 32;
                 break;
               }
 
@@ -292,83 +292,87 @@ var _initialiseProps = function _initialiseProps() {
               }
 
               returnData.push(item);
-              _context2.next = 27;
+              _context2.next = 29;
               break;
 
             case 15:
               modelData = new Model();
               _context2.next = 18;
-              return modelData.setData(item);
+              return modelData.setJSON(item);
 
             case 18:
+              _context2.next = 20;
+              return modelData._prepareFunctionFields();
+
+            case 20:
               if (!(_this._json === true)) {
-                _context2.next = 26;
+                _context2.next = 28;
                 break;
               }
 
               _context2.t0 = returnData;
-              _context2.next = 22;
+              _context2.next = 24;
               return modelData.toJSON();
 
-            case 22:
+            case 24:
               _context2.t1 = _context2.sent;
 
               _context2.t0.push.call(_context2.t0, _context2.t1);
 
-              _context2.next = 27;
+              _context2.next = 29;
               break;
 
-            case 26:
+            case 28:
               returnData.push(modelData);
 
-            case 27:
+            case 29:
               _iteratorNormalCompletion4 = true;
               _context2.next = 7;
               break;
 
-            case 30:
-              _context2.next = 36;
+            case 32:
+              _context2.next = 38;
               break;
 
-            case 32:
-              _context2.prev = 32;
+            case 34:
+              _context2.prev = 34;
               _context2.t2 = _context2['catch'](5);
               _didIteratorError4 = true;
               _iteratorError4 = _context2.t2;
 
-            case 36:
-              _context2.prev = 36;
-              _context2.prev = 37;
+            case 38:
+              _context2.prev = 38;
+              _context2.prev = 39;
 
               if (!_iteratorNormalCompletion4 && _iterator4.return) {
                 _iterator4.return();
               }
 
-            case 39:
-              _context2.prev = 39;
+            case 41:
+              _context2.prev = 41;
 
               if (!_didIteratorError4) {
-                _context2.next = 42;
+                _context2.next = 44;
                 break;
               }
 
               throw _iteratorError4;
 
-            case 42:
-              return _context2.finish(39);
-
-            case 43:
-              return _context2.finish(36);
-
             case 44:
-              return _context2.abrupt('return', returnData);
+              return _context2.finish(41);
 
             case 45:
+              return _context2.finish(38);
+
+            case 46:
+              return _context2.abrupt('return', returnData);
+
+            case 47:
             case 'end':
               return _context2.stop();
           }
         }
-      }, _callee2, _this, [[5, 32, 36, 44], [37,, 39, 43]]);
+      }, _callee2, _this, [[5, 34, 38, 46], [39,, 41, 45]]);
     }));
 
     return function (_x6) {

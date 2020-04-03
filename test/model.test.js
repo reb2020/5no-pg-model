@@ -115,6 +115,10 @@ class UsersAddresses extends Model {
           type: String,
           defaultValue: null,
         },
+        countData: {
+          type: Function,
+          fn: (model) => model.getCount(),
+        },
         created_at: {
           type: Date,
           created: true,
@@ -128,6 +132,8 @@ class UsersAddresses extends Model {
       },
       relations: {},
     }
+
+    getCount = () => Manager.build(UsersAddresses).count('user_id', this.user_id)
 }
 
 class UsersInfo extends Model {
@@ -207,7 +213,7 @@ class Users extends Model {
         },
         countRoles: {
           type: Function,
-          fn: (model) => Manager.build(UserRoles).count('user_id', model.id),
+          fn: (model) => model.getCountRoles(),
         },
         properties: {
           type: Array,
@@ -292,6 +298,8 @@ class Users extends Model {
         },
       },
     }
+
+    getCountRoles = () => Manager.build(UserRoles).count('user_id', this.id)
 }
 
 const jsonTestData = {
@@ -299,6 +307,7 @@ const jsonTestData = {
     {
       'created_at': sinon.match(dateRegex),
       'id': sinon.match(uuidV4Regex),
+      'countData': 2,
       'postcode': '100500',
       'street_name': 'Test',
       'updated_at': sinon.match(dateRegex),
@@ -307,6 +316,7 @@ const jsonTestData = {
     {
       'created_at': sinon.match(dateRegex),
       'id': sinon.match(uuidV4Regex),
+      'countData': 2,
       'postcode': '100502',
       'street_name': 'Test1',
       'updated_at': sinon.match(dateRegex),
@@ -344,6 +354,7 @@ const jsonTestData = {
   'created_at': sinon.match(dateRegex),
   'email': 'test@test.me',
   'id': sinon.match(uuidV4Regex),
+  'countRoles': 2,
   'public_key': 'test_123',
   'secret_key': 'test_333',
   'updated_at': sinon.match(dateRegex),
@@ -368,6 +379,7 @@ const jsonUpdateTestData = {
     {
       'created_at': sinon.match(dateRegex),
       'id': sinon.match(uuidV4Regex),
+      'countData': 2,
       'postcode': '100501',
       'street_name': 'Test',
       'updated_at': sinon.match(dateRegex),
@@ -376,6 +388,7 @@ const jsonUpdateTestData = {
     {
       'created_at': sinon.match(dateRegex),
       'id': sinon.match(uuidV4Regex),
+      'countData': 2,
       'postcode': '100502',
       'street_name': 'Test1',
       'updated_at': sinon.match(dateRegex),
@@ -413,6 +426,7 @@ const jsonUpdateTestData = {
   'created_at': sinon.match(dateRegex),
   'email': 'test@test.me',
   'id': sinon.match(uuidV4Regex),
+  'countRoles': 2,
   'public_key': 'test_1231',
   'secret_key': 'test_3331',
   'updated_at': sinon.match(dateRegex),
@@ -436,6 +450,7 @@ const jsonTestUpdateData = {
     {
       'created_at': sinon.match(dateRegex),
       'id': sinon.match(uuidV4Regex),
+      'countData': 2,
       'postcode': '100500',
       'street_name': 'Test',
       'updated_at': sinon.match(dateRegex),
@@ -444,6 +459,7 @@ const jsonTestUpdateData = {
     {
       'created_at': sinon.match(dateRegex),
       'id': sinon.match(uuidV4Regex),
+      'countData': 2,
       'postcode': '100508',
       'street_name': 'Test1',
       'updated_at': sinon.match(dateRegex),
@@ -481,6 +497,7 @@ const jsonTestUpdateData = {
   'created_at': sinon.match(dateRegex),
   'email': 'test@test.me',
   'id': sinon.match(uuidV4Regex),
+  'countRoles': 2,
   'public_key': 'test_123',
   'secret_key': 'test_33309',
   'updated_at': sinon.match(dateRegex),
@@ -495,6 +512,34 @@ const jsonTestUpdateData = {
     {
       name: 'test2',
       value: 'OK2',
+    },
+  ],
+}
+
+const saveByJSONReturn = {
+  id: sinon.match(uuidV4Regex),
+  email: 'test2010@test.me',
+  public_key: 'test_123',
+  secret_key: 'test_333',
+  personalised: { test: 100 },
+  countRoles: 1,
+  properties: [],
+  created_at: sinon.match(dateRegex),
+  updated_at: sinon.match(dateRegex),
+  Addresses: [
+    {
+      id: sinon.match(uuidV4Regex),
+      user_id: sinon.match(uuidV4Regex),
+      street_name: 'Test 100',
+      postcode: '100501',
+      countData: 1,
+      created_at: sinon.match(dateRegex),
+      updated_at: sinon.match(dateRegex) } ],
+  Roles: [
+    { id: sinon.match(uuidV4Regex),
+      role: 'Admin',
+      created_at: sinon.match(dateRegex),
+      updated_at: sinon.match(dateRegex),
     },
   ],
 }
@@ -632,16 +677,28 @@ describe('Model', () => {
         Roles: [ await adminRole.toJSON() ],
       }
 
-      const returnData = await testNewUser.saveByData(newData)
+      const returnData = await testNewUser.saveByJSON(newData)
 
       usersNewId = testNewUser.id
+
+      const testData = await testNewUser.toJSON()
+
+      let cb = sinon.spy()
+      cb(testData)
+      cb.should.have.been.calledWith(saveByJSONReturn)
 
       expect(returnData).to.eql(true)
     })
 
     it('just a save', async() => {
       const data = await Manager.build(Users).find(usersNewId)
-      data.secret_key = '100'
+      data.secret_key = 'test_333'
+
+      const testData = await data.toJSON()
+
+      let cb = sinon.spy()
+      cb(testData)
+      cb.should.have.been.calledWith(saveByJSONReturn)
 
       const returnData = await data.save()
 
@@ -807,14 +864,14 @@ describe('Model', () => {
       cb.should.have.been.calledWith(jsonTestUpdateData)
     })
 
-    it('update setData', async() => {
+    it('update setJSON', async() => {
       let data = await Manager.build(Users).find(usersId)
 
       const testDataJson = await data.toJSON()
 
       testDataJson.Addresses[1].postcode = '100502'
 
-      await data.setData({
+      await data.setJSON({
         secret_key: 'test_333',
         Info: {
           last_name: 'Sokol2',
@@ -836,7 +893,7 @@ describe('Model', () => {
       cb.should.have.been.calledWith(jsonTestData)
     })
 
-    it('saveByData', async() => {
+    it('saveByJSON', async() => {
       const dataJson = await Manager.build(Users, true).find(usersId)
       let cb = sinon.spy()
       cb(dataJson)
@@ -859,7 +916,7 @@ describe('Model', () => {
       ]
 
       const newUserData = new Users()
-      await newUserData.saveByData(dataJson)
+      await newUserData.saveByJSON(dataJson)
 
       const data = await newUserData.toJSON()
 

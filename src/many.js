@@ -15,7 +15,7 @@ class Many extends Array {
     const RelationModel = this.model
     let newRelationModel = new RelationModel()
     newRelationModel._parent = this
-    await newRelationModel.setData(data)
+    await newRelationModel.setJSON(data)
     this.push(newRelationModel)
     return newRelationModel
   }
